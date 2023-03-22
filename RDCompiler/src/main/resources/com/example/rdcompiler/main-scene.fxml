@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="651.0" prefWidth="1023.0" stylesheets="@../../../css/edit.css" xmlns:controller="com.example." xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.rdcompiler.MainSceneController">
+   <center>
+      <TextArea fx:id="txtAreaCode" onKeyReleased="#evtKeyReleased" prefHeight="200.0" prefWidth="200.0" promptText="1" styleClass="text-area" BorderPane.alignment="CENTER" />
+   </center>
+   <left>
+      <TextArea fx:id="txtAreaRow" disable="true" editable="false" prefHeight="626.0" prefWidth="41.0" text="1" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </TextArea>
+   </left>
+   <top>
+      <VBox prefHeight="63.0" prefWidth="1023.0" BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar>
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Delete" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <HBox alignment="CENTER_LEFT" prefHeight="69.0" prefWidth="1023.0" spacing="12.0" style="-fx-background-color: lightblue;">
+               <children>
+                  <Button fx:id="btCompile" mnemonicParsing="false" onAction="#evtCompile" text="Compilar" />
+                  <Button mnemonicParsing="false" onAction="#evtClear" text="Limpar" />
+               </children></HBox>
+         </children>
+      </VBox>
+   </top>
+   <bottom>
+      <TabPane prefHeight="135.0" prefWidth="1023.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab text="Tokens">
+               <content>
+                  <FlowPane fx:id="flowPaneTokens" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" />
+               </content>
+          </Tab>
+          <Tab text="Erros">
+               <content>
+                  <FlowPane fx:id="flowPaneErros" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" />
+               </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </bottom>
+</BorderPane>
