@@ -24,6 +24,9 @@ public class Token {
     public static final int TKN_FECHA_CHA = 15; // Token Fecha chaves
     public static final int TKN_ELSE = 16; // Token else
 
+    private int linhaErro;
+
+
 
     private final List<String> listaTokens = new ArrayList<String>(
             Arrays.asList("TKN_ID", "TKN_NUM", "TKN_OPE", "TKN_PON", "TKN_ASN", "TKN_RES")
@@ -60,6 +63,14 @@ public class Token {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public int getLinhaErro() {
+        return linhaErro;
+    }
+
+    public void setLinhaErro(int linhaErro) {
+        this.linhaErro = linhaErro;
     }
 
     @Override

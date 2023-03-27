@@ -15,6 +15,8 @@ public class AnalisadorLexico {
     private int linha = 1;
 
 
+
+
     public AnalisadorLexico(String code)
     {
         try {
@@ -96,7 +98,10 @@ public class AnalisadorLexico {
 
             current = nextChar();
             if(current == '\n')
+            {
                 linha++;
+            }
+
 
             switch(estado)
             {

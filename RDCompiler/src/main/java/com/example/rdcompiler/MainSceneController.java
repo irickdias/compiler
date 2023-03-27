@@ -1,8 +1,6 @@
 package com.example.rdcompiler;
 
-import com.example.rdcompiler.analisadores.AnalisadorLexico;
-import com.example.rdcompiler.analisadores.ErroLexico;
-import com.example.rdcompiler.analisadores.Token;
+import com.example.rdcompiler.analisadores.*;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -109,12 +107,14 @@ public class MainSceneController implements Initializable {
         try
         {
             AnalisadorLexico al =  new AnalisadorLexico(code);
+            AnalisadorSintatico as = new AnalisadorSintatico(al);
             Token token = null;
 
             do
             {
                 try{
-                    token = al.nextToken();
+                    as.P();
+                    //token = al.nextToken();
 
                     if(token != null)
                     {
@@ -127,8 +127,15 @@ public class MainSceneController implements Initializable {
                 }
                 catch(ErroLexico error)
                 {
-                    System.out.println("ERRO LEXICO: " + error.getMsg());
+                    //System.out.println("ERRO LEXICO: " + error.getMsg());
                     Text txt = new Text("ERRO LEXICO na linha " +error.getLinha() + ": " + error.getMsg());
+                    txt.setFont(new Font(12));
+                    txt.setFill(Color.RED);
+                    flowPaneErros.getChildren().add(txt);
+                }
+                catch (ErroSintatico errorS)
+                {
+                    Text txt = new Text("ERRO SINTATICO na linha " + errorS.getLinha() + ": " + errorS.getMsg());
                     txt.setFont(new Font(12));
                     txt.setFill(Color.RED);
                     flowPaneErros.getChildren().add(txt);
