@@ -466,9 +466,9 @@ public class AnalisadorSintatico extends MainSceneController {
         {
             tempAnaLexi = anaLexi; // copia o abjeto
             tempToken = tempAnaLexi.nextToken();
-            if(tempToken.getType() == Token.TKN_ID || tempToken.getType() == Token.TKN_IF ||
+            if(tempToken != null && (tempToken.getType() == Token.TKN_ID || tempToken.getType() == Token.TKN_IF ||
                     tempToken.getType() == Token.TKN_FOR || tempToken.getType() == Token.TKN_WHILE ||
-                        tempToken.getType() == Token.TKN_TIPO)
+                        tempToken.getType() == Token.TKN_TIPO))
                 P();
         }
     }
