@@ -76,7 +76,7 @@ public class Token {
     @Override
     public String toString() {
         return "Token{" +
-                "type=" + listaTokens.get(type) +
+                "type=" + type +
                 ", text='" + text + '\'' +
                 '}';
     }

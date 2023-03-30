@@ -15,8 +15,20 @@ public class AnalisadorSintatico extends MainSceneController {
     private Token token; // token atual
     private Token tempToken; // token atual
     private List<String> memoria = new ArrayList<String>();
+    private List<Token> tokens = new ArrayList<Token>();
+
+    public List<Token> getTokens() {
+        return tokens;
+    }
+
     private boolean declaracao_flag = false;
     private boolean for_flag = false;
+    private boolean fim_programa = false;
+
+    public boolean isFim_programa() {
+        return fim_programa;
+    }
+
     private int linha;
 
 
@@ -37,26 +49,34 @@ public class AnalisadorSintatico extends MainSceneController {
 
     public void P(){
         token = anaLexi.nextToken();
-        if(token.getType() == Token.TKN_TIPO) // int, float, double
-        {
-            declaracao_flag = true;
-            DECLARACAO();
-        }
+
+        if(token == null)
+            fim_programa =true;
         else
+        {
+            if(token.getType() == Token.TKN_TIPO) // int, float, double
+            {
+                declaracao_flag = true;
+                DECLARACAO();
+            }
+            else
             if(token.getType() == Token.TKN_IF) // TOKEN "if" reconhecido
                 CONDICIONAL_IF();
             else
-                if(token.getType() == Token.TKN_WHILE || token.getType() == Token.TKN_FOR)
-                    LACO();
-                else
-                    if(token.getType() == Token.TKN_ID)
-                        IDENTIFICADOR();
-                    else
-                    {
-                        // sincroniza tokens
-                        syncTokens();
-                        throw new ErroSintatico("Inicio/caracter de novo comando errado!");
-                    }
+            if(token.getType() == Token.TKN_WHILE || token.getType() == Token.TKN_FOR)
+                LACO();
+            else
+            if(token.getType() == Token.TKN_ID)
+                IDENTIFICADOR();
+            else
+            {
+                // sincroniza tokens
+                syncTokens();
+                throw new ErroSintatico("Inicio/caracter de novo comando errado!");
+            }
+        }
+
+
 
     };
 
@@ -72,7 +92,11 @@ public class AnalisadorSintatico extends MainSceneController {
             //FIMLINHA();
         }
         else
+        {
+            syncTokens();
             throw new ErroSintatico("Identificador esperado!");
+        }
+
     }
 
     public void DECLARACAO2()
@@ -102,7 +126,11 @@ public class AnalisadorSintatico extends MainSceneController {
             if(token.getType() == Token.TKN_ID)
                 IDENTIFICADOR();
             else
+            {
+                syncTokens();
                 throw new ErroSintatico("Identificador esperado!");
+            }
+
         }
 
 
@@ -130,7 +158,11 @@ public class AnalisadorSintatico extends MainSceneController {
     {
         token = anaLexi.nextToken();
         if(token.getType() != Token.TKN_OPE_ARI && token.getType() != Token.TKN_PONTO_PV && token.getType() != Token.TKN_PONTO_V)
+        {
+            syncTokens();
             throw new ErroSintatico("Operador Aritmético não reconhecido!");
+        }
+
     }
 
     public void TIPO(){
@@ -142,19 +174,29 @@ public class AnalisadorSintatico extends MainSceneController {
     public void CONDICIONAL_IF(){
         token = anaLexi.nextToken(); // precisa ser um (
         if(token.getType() != Token.TKN_ABRE_PAR)
+        {
+            syncTokens();
             throw new ErroSintatico("Abertura de parenteses faltando!");
+        }
         else
         {
             ER(); // expressao relacional
 
             token = anaLexi.nextToken(); // precisa ser um )
             if(token.getType() != Token.TKN_FECHA_PAR)
+            {
+                syncTokens();
                 throw new ErroSintatico("Faltando fechar parenteses!");
+            }
+
             else
             {
                 token = anaLexi.nextToken();
                 if(token.getType() != Token.TKN_ABRE_CHA) // precisa ser um {
+                {
+                    syncTokens();
                     throw new ErroSintatico("Faltando abrir chaves!");
+                }
                 else
                 {
                     // LOOP -  RESOLVER
@@ -174,7 +216,10 @@ public class AnalisadorSintatico extends MainSceneController {
 
                     token = anaLexi.nextToken();
                     if(token.getType() != Token.TKN_FECHA_CHA) // precisa ser um }
+                    {
+                        syncTokens();
                         throw new ErroSintatico("Faltando fechar chaves!");
+                    }
                     else
                     {
                         tempAnaLexi = anaLexi; // copia o abjeto
@@ -197,7 +242,10 @@ public class AnalisadorSintatico extends MainSceneController {
         {
             token = anaLexi.nextToken();
             if(token.getType() != Token.TKN_ABRE_CHA) // precisa ser um {
+            {
+                syncTokens();
                 throw new ErroSintatico("Faltando abrir chaves!");
+            }
             else
             {
 //                tempAnaLexi = anaLexi; // copia o abjeto
@@ -214,7 +262,10 @@ public class AnalisadorSintatico extends MainSceneController {
 
                 token = anaLexi.nextToken();
                 if(token.getType() != Token.TKN_FECHA_CHA) // precisa ser um }
+                {
+                    syncTokens();
                     throw new ErroSintatico("Faltando fechar chaves!");
+                }
                 else
                     FIMESTRUTURA();
             }
@@ -236,7 +287,11 @@ public class AnalisadorSintatico extends MainSceneController {
     public void VALOR(){
         //token = anaLexi.nextToken();
         if(token.getType() != Token.TKN_ID && token.getType() != Token.TKN_NUM)
+        {
+            syncTokens();
             throw new ErroSintatico("identificador ou numero esperado!");
+        }
+
 
     }
 
@@ -248,12 +303,18 @@ public class AnalisadorSintatico extends MainSceneController {
         token = anaLexi.nextToken(); // precisa de um identifiador
 
         if(token.getType() != Token.TKN_ID)
+        {
+            syncTokens();
             throw new ErroSintatico("Faltando identificador");
+        }
         else
         {
             token = anaLexi.nextToken(); // precisa ser um operador relacional
             if(token.getType() != Token.TKN_OPE_REL)
+            {
+                syncTokens();
                 throw new ErroSintatico("operador relacional não reconhecido");
+            }
             else
             {
                 token = anaLexi.nextToken(); // deverá ler um indentificador ou numero
@@ -265,7 +326,10 @@ public class AnalisadorSintatico extends MainSceneController {
     public void FOR(){
         token = anaLexi.nextToken();
         if(token.getType() != Token.TKN_ABRE_PAR) // precisa ser um (
+        {
+            syncTokens();
             throw new ErroSintatico("Abertura de parenteses no comando 'for' faltando!");
+        }
         else
         {
             token = anaLexi.nextToken();
@@ -276,6 +340,7 @@ public class AnalisadorSintatico extends MainSceneController {
             else
             {
                 // laço para sincronizar tokens
+                syncTokens();
                 throw new ErroSintatico("Estrutura do laço 'for' mal feita! Variavel de indice esperada!");
             }
 
@@ -285,6 +350,7 @@ public class AnalisadorSintatico extends MainSceneController {
             {
                 // erro de ponto e virgula faltando na condicao de parada
                 // sincroniza tokens
+                syncTokens();
                 throw new ErroSintatico("';' faltando na condicao de parada do comando 'for'");
             }
             else
@@ -296,6 +362,7 @@ public class AnalisadorSintatico extends MainSceneController {
                 if(token.getType() != Token.TKN_ID)
                 {
                     //sincroniza tokens
+                    syncTokens();
                     throw new ErroSintatico("Esperando identificador no incremento do for");
                 }
                 else
@@ -308,6 +375,7 @@ public class AnalisadorSintatico extends MainSceneController {
                     if(token.getType() != Token.TKN_FECHA_PAR)
                     {
                         // sincroniza tokens
+                        syncTokens();
                         throw new ErroSintatico("Faltando fechar parenteses no comando 'for'");
                     }
                     else
@@ -316,6 +384,7 @@ public class AnalisadorSintatico extends MainSceneController {
                         if(token.getType() != Token.TKN_ABRE_CHA) // precisa ser um {
                         {
                             // sincroniza tokens
+                            syncTokens();
                             throw new ErroSintatico("Faltando abrir chaves no comando 'for'!");
                         }
                         else
@@ -327,6 +396,7 @@ public class AnalisadorSintatico extends MainSceneController {
                             if(token.getType() != Token.TKN_FECHA_CHA) // precisa ser um }
                             {
                                 //sincroniza tokens
+                                syncTokens();
                                 throw new ErroSintatico("Faltando fechar chaves no comando 'for'!");
                             }
                             else
@@ -350,12 +420,18 @@ public class AnalisadorSintatico extends MainSceneController {
 
             token = anaLexi.nextToken(); // precisa ser um )
             if(token.getType() != Token.TKN_FECHA_PAR)
+            {
+                syncTokens();
                 throw new ErroSintatico("Faltando fechar parenteses no comando 'while'!");
+            }
             else
             {
                 token = anaLexi.nextToken();
                 if(token.getType() != Token.TKN_ABRE_CHA) // precisa ser um {
+                {
+                    syncTokens();
                     throw new ErroSintatico("Faltando abrir chaves no comando 'while'!");
+                }
                 else
                 {
 
@@ -363,7 +439,10 @@ public class AnalisadorSintatico extends MainSceneController {
 
                     token = anaLexi.nextToken();
                     if(token.getType() != Token.TKN_FECHA_CHA) // precisa ser um }
+                    {
+                        syncTokens();
                         throw new ErroSintatico("Faltando fechar chaves no comando 'while'!");
+                    }
                     else
                         FIMESTRUTURA();
 
@@ -379,7 +458,10 @@ public class AnalisadorSintatico extends MainSceneController {
             declaracao_flag = false;
 
         if(token.getType() != Token.TKN_PONTO_PV)
+        {
+            syncTokens();
             throw new ErroSintatico("Faltando ';'");
+        }
         else
         {
             tempAnaLexi = anaLexi; // copia o abjeto
@@ -418,7 +500,7 @@ public class AnalisadorSintatico extends MainSceneController {
         do
         {
             token = anaLexi.nextToken();
-        } while(token.getType() != Token.TKN_PONTO_PV && token.getType() != Token.TKN_ABRE_CHA && token.getType() != Token.TKN_FECHA_CHA);
+        } while(token != null && token.getType() != Token.TKN_PONTO_PV && token.getType() != Token.TKN_ABRE_CHA && token.getType() != Token.TKN_FECHA_CHA);
     }
 
 }

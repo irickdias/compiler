@@ -12,6 +12,7 @@ public class AnalisadorLexico {
     private int estado;
     private int pos = 0;
     private List<String> reserved;
+    private List<String> tipos;
     private int linha = 1;
 
 
@@ -32,6 +33,10 @@ public class AnalisadorLexico {
             reserved.add("string");
             reserved.add("if");
             reserved.add("while");
+
+            tipos = new ArrayList<String>();
+            tipos.add("int");
+            tipos.add("double");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -72,6 +77,28 @@ public class AnalisadorLexico {
         return c == ',';
     }
 
+    private boolean isKeyOpener(char c)
+    {
+        return c == '{';
+    }
+
+    private boolean isKeyCloser(char c)
+    {
+        return c == '}';
+    }
+
+    private boolean isParOpener(char c)
+    {
+        return c == '(';
+    }
+
+    private boolean isParCloser(char c)
+    {
+        return c == ')';
+    }
+
+
+
     private char nextChar()
     {
         if(eof())
@@ -85,6 +112,7 @@ public class AnalisadorLexico {
         char current;
         Token token;
         String term = "";
+        char pontuacao = 0;
         //int linha = 1;
         int ope_rel_count = 0;
 
@@ -97,8 +125,10 @@ public class AnalisadorLexico {
         {
 
             current = nextChar();
+            //'\u0000' = fim de linha
             if(current == '\n')
             {
+
                 linha++;
             }
 
@@ -124,7 +154,16 @@ public class AnalisadorLexico {
                         ope_rel_count++;
                     }
                     else
+                    if(isDotComma(current) || isComma(current))
                     {
+                        //backChar();
+                        pontuacao = current;
+                        estado = 6;
+                    }
+
+                    else
+                    {
+                        syncChar();
                         throw new ErroLexico(linha,"SÍMBOLO DESCONHECIDO!");
                     }
 
@@ -136,23 +175,46 @@ public class AnalisadorLexico {
                         estado = 1;
                         term += current;
                     }
-                    else if(isSpace(current) || isOperatorR(current) || current == '\0')
-                        estado = 2;
+                    else if(isSpace(current) || isOperatorR(current) || current == '\0' || isDotComma(current) || isComma(current))
+                    {
+                        //estado = 2;
+                        backChar();
+
+                        token = new Token();
+                        token.setText(term);
+                        if(tipos.contains(term))
+                        {
+
+                            token.setType(Token.TKN_TIPO);
+                        }
+                        else
+                            token.setType(Token.TKN_ID);
+
+
+                        return token;
+                    }
                     else
+                    {
+                        syncChar();
                         throw new ErroLexico(linha,"IDENTIFICADOR MAL FORMADO");
+                    }
+
 
                     break;
 
                 case 2: // estado 2 é estado final
-                    if(!eof())
-                        backChar(); // volta uma posição, depois de ler \n
+//                    if(!eof())
+//                        backChar(); // volta uma posição, depois de ler \n
+//                    else
+//                        if(eof() && (isDotComma(current)))
+                    backChar();
 
                     token = new Token();
                     token.setText(term);
-                    if(reserved.contains(term))
+                    if(tipos.contains(term))
                     {
 
-                        token.setType(Token.TKN_RES);
+                        token.setType(Token.TKN_TIPO);
                     }
                     else
                         token.setType(Token.TKN_ID);
@@ -169,7 +231,11 @@ public class AnalisadorLexico {
                     else if( !isChar(current))
                         estado = 4;
                     else
+                    {
+                        syncChar();
                         throw new ErroLexico(linha,"NÚMERO DESCONHECIDO!");
+                    }
+
                     break;
 
                 case 4: // estado 4 é estado final
@@ -189,7 +255,10 @@ public class AnalisadorLexico {
                         ope_rel_count++;
                     }
                     else if(isOperatorR(current) && ope_rel_count == 3)
+                    {
+                        syncChar();
                         throw new ErroLexico(linha, "Operador relacional desconhecido!");
+                    }
                     else
                     {
                         token = new Token();
@@ -197,6 +266,16 @@ public class AnalisadorLexico {
                         token.setText(term);
                         return token;
                     }
+
+                case 6:
+                    token = new Token();
+                    if(isDotComma(pontuacao))
+                    {
+                        token.setType(Token.TKN_PONTO_PV);
+                        token.setText("" + pontuacao);
+
+                    }
+                    return token;
 
             }
         }
@@ -212,5 +291,15 @@ public class AnalisadorLexico {
     private boolean eof()
     {
         return pos == content.length;
+    }
+
+    private void syncChar()
+    {
+        char sync;
+        do
+        {
+            sync = nextChar();
+
+        } while(sync != ' ' && !isSpace(sync) && !isDotComma(sync));
     }
 }

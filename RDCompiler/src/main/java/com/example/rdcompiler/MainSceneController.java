@@ -108,7 +108,7 @@ public class MainSceneController implements Initializable {
         {
             AnalisadorLexico al =  new AnalisadorLexico(code);
             AnalisadorSintatico as = new AnalisadorSintatico(al);
-            Token token = null;
+            //Token token = null;
 
             do
             {
@@ -116,14 +116,14 @@ public class MainSceneController implements Initializable {
                     as.P();
                     //token = al.nextToken();
 
-                    if(token != null)
-                    {
-                        System.out.println(token);
-                        Text txt = new Text(token.toString());
-                        txt.setFont(new Font(12));
-                        txt.setFill(Color.GREEN);
-                        flowPaneTokens.getChildren().add(txt);
-                    }
+//                    if(token != null)
+//                    {
+//                        System.out.println(token);
+//                        Text txt = new Text(token.toString());
+//                        txt.setFont(new Font(12));
+//                        txt.setFill(Color.GREEN);
+//                        flowPaneTokens.getChildren().add(txt);
+//                    }
                 }
                 catch(ErroLexico error)
                 {
@@ -141,7 +141,17 @@ public class MainSceneController implements Initializable {
                     flowPaneErros.getChildren().add(txt);
                 }
 
-            } while (token != null);
+            } while (!as.isFim_programa());
+
+            // mostra tokens na tela
+            List<Token> tokens = as.getTokens();
+
+            for (Token token : tokens) {
+                Text txt = new Text(token.toString());
+                txt.setFont(new Font(12));
+                txt.setFill(Color.GREEN);
+                flowPaneTokens.getChildren().add(txt);
+            }
 
         }
         catch (Exception e) {
