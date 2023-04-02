@@ -25,6 +25,7 @@ public class Token {
     public static final int TKN_ELSE = 16; // Token else
 
     private int linhaErro;
+    private int linha;
 
 
 
@@ -71,6 +72,14 @@ public class Token {
 
     public void setLinhaErro(int linhaErro) {
         this.linhaErro = linhaErro;
+    }
+
+    public int getLinha() {
+        return linha;
+    }
+
+    public void setLinha(int linha) {
+        this.linha = linha;
     }
 
     @Override

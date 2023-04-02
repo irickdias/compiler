@@ -4,9 +4,9 @@ public class ErroSintatico extends RuntimeException{
 
     private int linha;
     String msg;
-    public ErroSintatico( String msg)
+    public ErroSintatico(int linha, String msg)
     {
-        //this.linha = linha;
+        this.linha = linha;
         this.msg = msg;
     }
 

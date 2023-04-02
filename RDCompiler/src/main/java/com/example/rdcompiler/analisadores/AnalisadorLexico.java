@@ -136,36 +136,42 @@ public class AnalisadorLexico {
             switch(estado)
             {
                 case 0: // estando em 0  e ler...
-                    if (isChar(current)) // caracter, vai para o estado 1
-                    {
-                        estado = 1;
-                        term += current;
-                    }
-                    else if (isDigit(current)) // dígito, vai para o estado 3
-                    {
-                        estado = 3;
-                        term += current;
-                    }
-                    else if (isSpace(current)) // algum tipo de espaço (\n \t \r ou espaço normal), permanece em 0
-                        estado = 0;
-                    else if (isOperatorR(current))
-                    {
-                        estado = 5;
-                        ope_rel_count++;
-                    }
+                    if (current == '\u0000')
+                        return null;
                     else
-                    if(isDotComma(current) || isComma(current))
                     {
-                        //backChar();
-                        pontuacao = current;
-                        estado = 6;
+                        if (isChar(current)) // caracter, vai para o estado 1
+                        {
+                            estado = 1;
+                            term += current;
+                        }
+                        else if (isDigit(current)) // dígito, vai para o estado 3
+                        {
+                            estado = 3;
+                            term += current;
+                        }
+                        else if (isSpace(current)) // algum tipo de espaço (\n \t \r ou espaço normal), permanece em 0
+                            estado = 0;
+                        else if (isOperatorR(current))
+                        {
+                            estado = 5;
+                            ope_rel_count++;
+                        }
+                        else
+                        if(isDotComma(current) || isComma(current))
+                        {
+                            //backChar();
+                            pontuacao = current;
+                            estado = 6;
+                        }
+
+                        else
+                        {
+                            syncChar();
+                            throw new ErroLexico(linha,"SÍMBOLO DESCONHECIDO!");
+                        }
                     }
 
-                    else
-                    {
-                        syncChar();
-                        throw new ErroLexico(linha,"SÍMBOLO DESCONHECIDO!");
-                    }
 
                     break;
 
@@ -178,10 +184,12 @@ public class AnalisadorLexico {
                     else if(isSpace(current) || isOperatorR(current) || current == '\0' || isDotComma(current) || isComma(current))
                     {
                         //estado = 2;
-                        backChar();
+                        if(current != '\u0000')
+                            backChar();
 
                         token = new Token();
                         token.setText(term);
+                        token.setLinha(linha);
                         if(tipos.contains(term))
                         {
 
@@ -207,7 +215,8 @@ public class AnalisadorLexico {
 //                        backChar(); // volta uma posição, depois de ler \n
 //                    else
 //                        if(eof() && (isDotComma(current)))
-                    backChar();
+                    if(current != '\u0000')
+                        backChar();
 
                     token = new Token();
                     token.setText(term);
@@ -269,6 +278,7 @@ public class AnalisadorLexico {
 
                 case 6:
                     token = new Token();
+                    token.setLinha(linha);
                     if(isDotComma(pontuacao))
                     {
                         token.setType(Token.TKN_PONTO_PV);
