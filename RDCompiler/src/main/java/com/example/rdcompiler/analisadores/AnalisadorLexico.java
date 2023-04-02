@@ -54,8 +54,12 @@ public class AnalisadorLexico {
 
     private boolean isOperatorR(char c)
     {
-        return c == '>' || c == '<' || c == '=' || c == '!';
+        return c == '>' || c == '<' || c == '!';
     }
+//    private boolean isOperatorR(char c)
+//    {
+//        return c == '>' || c == '<' || c == '=' || c == '!';
+//    }
 
     private boolean isOperatorA(char c)
     {
@@ -96,6 +100,8 @@ public class AnalisadorLexico {
     {
         return c == ')';
     }
+
+    private boolean isEqualSign(char c) {return c == '=';}
 
 
 
@@ -158,13 +164,12 @@ public class AnalisadorLexico {
                             ope_rel_count++;
                         }
                         else
-                        if(isDotComma(current) || isComma(current))
+                        if(isDotComma(current) || isComma(current) || isEqualSign(current))
                         {
                             //backChar();
                             pontuacao = current;
                             estado = 6;
                         }
-
                         else
                         {
                             syncChar();
@@ -237,12 +242,21 @@ public class AnalisadorLexico {
                         estado = 3;
                         term += current;
                     }
-                    else if( !isChar(current))
-                        estado = 4;
-                    else
+                    else if( isChar(current))
                     {
+                        //estado = 4;
                         syncChar();
                         throw new ErroLexico(linha,"NÚMERO DESCONHECIDO!");
+                    }
+                    else
+                    //if(isSpace(current) || isComma(current) || isDotComma(current))
+                    {
+
+                        backChar();
+                        token = new Token();
+                        token.setType(Token.TKN_NUM);
+                        token.setText(term);
+                        return token;
                     }
 
                     break;
@@ -275,6 +289,7 @@ public class AnalisadorLexico {
                         token.setText(term);
                         return token;
                     }
+                    break;
 
                 case 6:
                     token = new Token();
@@ -284,6 +299,20 @@ public class AnalisadorLexico {
                         token.setType(Token.TKN_PONTO_PV);
                         token.setText("" + pontuacao);
 
+                    }
+                    else
+                    if (isComma(pontuacao))
+                    {
+                        backChar();
+                        token.setType(Token.TKN_PONTO_V);
+                        token.setText("" + pontuacao);
+                    }
+                    else
+                    if(isEqualSign(pontuacao))
+                    {
+                        backChar();
+                        token.setType(Token.TKN_ATRI);
+                        token.setText("" + pontuacao);
                     }
                     return token;
 

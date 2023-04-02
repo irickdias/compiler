@@ -12,7 +12,7 @@ public class CompilerApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(CompilerApplication.class.getResource("main-scene.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 800, 400);
+        Scene scene = new Scene(fxmlLoader.load(), 800, 800);
         //scene.getStylesheets().add("../../resorces/css/edit.css");
         stage.setTitle("RDCompiler");
         stage.setScene(scene);
