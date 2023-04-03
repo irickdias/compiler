@@ -171,6 +171,12 @@ public class AnalisadorLexico {
                             estado = 6;
                         }
                         else
+                        if(isOperatorA(current))
+                        {
+                            term += current;
+                            estado = 7;
+                        }
+                        else
                         {
                             syncChar();
                             throw new ErroLexico(linha,"SÍMBOLO DESCONHECIDO!");
@@ -180,7 +186,7 @@ public class AnalisadorLexico {
 
                     break;
 
-                case 1: // estando em 1 e ler...  Estado 1 é
+                case 1: // estando em 1 e ler...  Estado 1 é reconhecedor de identificadores
                     if (isChar(current) || isDigit(current)) // caracter ou dígito, permanece em 1
                     {
                         estado = 1;
@@ -236,7 +242,7 @@ public class AnalisadorLexico {
 
                     return token;
 
-                case 3: // estando em 3 e ler...
+                case 3: // estando em 3 e ler...  // reconhecedor de numeros
                     if(isDigit(current))
                     {
                         estado = 3;
@@ -314,6 +320,15 @@ public class AnalisadorLexico {
                         token.setType(Token.TKN_ATRI);
                         token.setText("" + pontuacao);
                     }
+                    return token;
+
+                case 7:
+                    // backchar();
+                    token = new Token();
+                    token.setLinha(linha);
+                    token.setType(Token.TKN_OPE_ARI);
+                    token.setText(term);
+
                     return token;
 
             }
