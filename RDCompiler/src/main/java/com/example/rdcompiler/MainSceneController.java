@@ -34,7 +34,7 @@ public class MainSceneController implements Initializable {
 
 
     @FXML
-    private FlowPane flowPaneTokens, flowPaneErros;
+    private FlowPane flowPaneTokens, flowPaneErros, flowTeste;
 
     private int totRow = 1;
     //private List<String> reserved;
@@ -151,6 +151,7 @@ public class MainSceneController implements Initializable {
                 txt.setFont(new Font(12));
                 txt.setFill(Color.GREEN);
                 flowPaneTokens.getChildren().add(txt);
+                //flowTeste.getChildren().add(txt);
             }
 
         }

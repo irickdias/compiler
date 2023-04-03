@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
@@ -59,12 +60,20 @@
         <tabs>
           <Tab text="Tokens">
                <content>
-                  <FlowPane fx:id="flowPaneTokens" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" />
+                  <ScrollPane prefHeight="200.0" prefWidth="200.0">
+                     <content>
+                        <FlowPane fx:id="flowPaneTokens" orientation="VERTICAL" />
+                     </content>
+                  </ScrollPane>
                </content>
           </Tab>
           <Tab text="Erros">
                <content>
-                  <FlowPane fx:id="flowPaneErros" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" />
+                  <ScrollPane prefHeight="200.0" prefWidth="200.0">
+                     <content>
+                        <FlowPane fx:id="flowPaneErros" orientation="VERTICAL" />
+                     </content>
+                  </ScrollPane>
                </content>
           </Tab>
         </tabs>
