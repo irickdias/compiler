@@ -177,6 +177,12 @@ public class AnalisadorLexico {
                             estado = 7;
                         }
                         else
+                        if(isParOpener(current) || isParCloser(current) || isKeyOpener(current) || isKeyCloser(current))
+                        {
+                            term += current;
+                            estado = 8;
+                        }
+                        else
                         {
                             syncChar();
                             throw new ErroLexico(linha,"SÍMBOLO DESCONHECIDO!");
@@ -206,6 +212,18 @@ public class AnalisadorLexico {
 
                             token.setType(Token.TKN_TIPO);
                         }
+                        else
+                        if(term.equals("if"))
+                            token.setType(Token.TKN_IF);
+                        else
+                        if(term.equals("else"))
+                            token.setType(Token.TKN_ELSE);
+                        else
+                        if (term.equals("while"))
+                            token.setType(Token.TKN_WHILE);
+                        else
+                        if (term.equals("for"))
+                            token.setType(Token.TKN_FOR);
                         else
                             token.setType(Token.TKN_ID);
 
@@ -328,6 +346,27 @@ public class AnalisadorLexico {
                     token.setLinha(linha);
                     token.setType(Token.TKN_OPE_ARI);
                     token.setText(term);
+
+                    return token;
+
+                case 8:
+                    if(current != '\u0000')
+                        backChar();
+
+                    token = new Token();
+                    token.setLinha(linha);
+                    //token.setType(Token.TKN_OPE_ARI);
+                    token.setText(term);
+                    if(isParOpener(term.charAt(0)))
+                        token.setType(Token.TKN_ABRE_PAR);
+                    else
+                    if(isParCloser(term.charAt(0)))
+                        token.setType(Token.TKN_FECHA_PAR);
+                    else
+                    if(isKeyOpener(term.charAt(0)))
+                        token.setType(Token.TKN_ABRE_CHA);
+                    else
+                        token.setType(Token.TKN_FECHA_CHA);
 
                     return token;
 
