@@ -113,6 +113,16 @@ public class AnalisadorLexico {
         return content[pos++];
     }
 
+    private int getPos()
+    {
+        return pos;
+    }
+
+    private void setPos(int p)
+    {
+        this.pos = p;
+    }
+
     public Token nextToken() // automato do analizador léxico
     {
         char current;
@@ -198,7 +208,8 @@ public class AnalisadorLexico {
                         estado = 1;
                         term += current;
                     }
-                    else if(isSpace(current) || isOperatorR(current) || current == '\0' || isDotComma(current) || isComma(current))
+                    else if(isSpace(current) || isOperatorR(current) || current == '\0' ||
+                            isDotComma(current) || isComma(current) || isParOpener(current) )
                     {
                         //estado = 2;
                         if(current != '\u0000')
@@ -248,6 +259,7 @@ public class AnalisadorLexico {
                         backChar();
 
                     token = new Token();
+                    token.setLinha(linha);
                     token.setText(term);
                     if(tipos.contains(term))
                     {
@@ -278,6 +290,7 @@ public class AnalisadorLexico {
 
                         backChar();
                         token = new Token();
+                        token.setLinha(linha);
                         token.setType(Token.TKN_NUM);
                         token.setText(term);
                         return token;
@@ -309,6 +322,7 @@ public class AnalisadorLexico {
                     else
                     {
                         token = new Token();
+                        token.setLinha(linha);
                         token.setType(Token.TKN_OPE_REL);
                         token.setText(term);
                         return token;

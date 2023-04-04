@@ -537,8 +537,18 @@ public class AnalisadorSintatico extends MainSceneController {
             }
             else
             {
+                // testar os tokens da frente para saber se tem mais linhas de comando
                 tempAnaLexi = anaLexi; // copia o abjeto
                 tempToken = tempAnaLexi.nextToken();
+                // copiar objeto nao funcionou
+
+                // Possivel solução 1: tentar criar uma nova instancia para p tempAnaLexi, e então copiar o objeto
+
+                //Possivel solucao 2: salvar o 'pos' atual do anaLexi, andar com o anaLexi normalmente
+                // e quando voltar, setar novamente o pos, com o pos salvo previamente
+                // anaLexi.setPos(savePos);
+                // e continua o programa
+
                 if(tempToken != null && (tempToken.getType() == Token.TKN_ID || tempToken.getType() == Token.TKN_IF ||
                         tempToken.getType() == Token.TKN_FOR || tempToken.getType() == Token.TKN_WHILE ||
                         tempToken.getType() == Token.TKN_TIPO))
