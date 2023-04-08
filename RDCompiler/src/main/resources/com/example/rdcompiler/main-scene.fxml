@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -8,18 +9,20 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="651.0" prefWidth="1023.0" stylesheets="@../../../css/edit.css" xmlns:controller="com.example." xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.rdcompiler.MainSceneController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="651.0" prefWidth="1023.0" stylesheets="@../../../css/edit.css" xmlns:controller="com.example.rdcompiler.MainSceneController" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.rdcompiler.MainSceneController">
    <center>
       <TextArea fx:id="txtAreaCode" onKeyReleased="#evtKeyReleased" prefHeight="200.0" prefWidth="200.0" promptText="1" styleClass="text-area" BorderPane.alignment="CENTER" />
    </center>
    <left>
-      <TextArea fx:id="txtAreaRow" disable="true" editable="false" prefHeight="626.0" prefWidth="41.0" text="1" BorderPane.alignment="CENTER">
+      <TextArea fx:id="txtAreaRow" disable="true" editable="false" prefHeight="626.0" prefWidth="41.0" stylesheets="@../../../css/edit.css" text="1" BorderPane.alignment="CENTER">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
@@ -30,9 +33,11 @@
          <children>
             <MenuBar>
               <menus>
-                <Menu mnemonicParsing="false" text="File">
+                <Menu mnemonicParsing="false" text="Arquivo">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Close" />
+                    <MenuItem mnemonicParsing="false" onAction="#evtAbrir" text="Abrir" />
+                        <MenuItem mnemonicParsing="false" onAction="#evtSalvar" text="Salvar" />
+                        <MenuItem mnemonicParsing="false" onAction="#evtFechar" text="Fechar" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
@@ -40,23 +45,49 @@
                     <MenuItem mnemonicParsing="false" text="Delete" />
                   </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Help">
+                <Menu mnemonicParsing="false" text="Ajuda">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
+                    <MenuItem mnemonicParsing="false" onAction="#evtSobre" text="Sobre" />
                   </items>
                 </Menu>
               </menus>
             </MenuBar>
-            <HBox alignment="CENTER_LEFT" prefHeight="69.0" prefWidth="1023.0" spacing="12.0" style="-fx-background-color: lightblue;">
+            <HBox alignment="CENTER_LEFT" prefHeight="69.0" prefWidth="1023.0" spacing="12.0" style="-fx-background-color: &quot;#393646&quot;;">
                <children>
-                  <Button fx:id="btCompile" mnemonicParsing="false" onAction="#evtCompile" text="Compilar" />
-                  <Button mnemonicParsing="false" onAction="#evtClear" text="Limpar" />
-               </children></HBox>
+                  <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#evtSave" prefHeight="35.0" prefWidth="35.0">
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="119.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../images/disqueteicon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="btCompile" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#evtCompile" prefHeight="35.0" prefWidth="35.0">
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="119.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../images/reproduziricon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                  <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#evtClear" prefHeight="35.0" prefWidth="35.0">
+                     <graphic>
+                        <ImageView fitHeight="27.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../images/vassouraicon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="12.0" top="5.0" />
+               </padding></HBox>
          </children>
       </VBox>
    </top>
    <bottom>
-      <TabPane prefHeight="135.0" prefWidth="1023.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane prefHeight="135.0" prefWidth="1023.0" style="-fx-background-color: #000;" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
           <Tab text="Tokens">
                <content>

@@ -176,5 +176,18 @@ public class MainSceneController implements Initializable {
     }
 
 
+    public void evtAbrir(ActionEvent event) {
+    }
 
+    public void evtSalvar(ActionEvent event) {
+    }
+
+    public void evtFechar(ActionEvent event) {
+    }
+
+    public void evtSave(ActionEvent event) {
+    }
+
+    public void evtSobre(ActionEvent event) {
+    }
 }
