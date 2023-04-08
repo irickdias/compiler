@@ -17,7 +17,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="651.0" prefWidth="1023.0" stylesheets="@../../../css/edit.css" xmlns:controller="com.example.rdcompiler.MainSceneController" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.rdcompiler.MainSceneController">
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="651.0" prefWidth="1023.0" stylesheets="@../../../css/edit.css" xmlns:controller="com.example" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.rdcompiler.MainSceneController">
+
    <center>
       <TextArea fx:id="txtAreaCode" onKeyReleased="#evtKeyReleased" prefHeight="200.0" prefWidth="200.0" promptText="1" styleClass="text-area" BorderPane.alignment="CENTER" />
    </center>
@@ -52,7 +54,7 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <HBox alignment="CENTER_LEFT" prefHeight="69.0" prefWidth="1023.0" spacing="12.0" style="-fx-background-color: &quot;#393646&quot;;">
+            <HBox alignment="CENTER_LEFT" prefHeight="69.0" prefWidth="1023.0" spacing="12.0" style="-fx-background-color: #393646;">
                <children>
                   <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#evtSave" prefHeight="35.0" prefWidth="35.0">
                      <graphic>

@@ -94,6 +94,12 @@ public class MainSceneController implements Initializable {
     }
 
     @FXML
+    public void evtSave()
+    {
+
+    }
+
+    @FXML
     public void evtCompile(ActionEvent event)
     {
         String code = txtAreaCode.getText();
