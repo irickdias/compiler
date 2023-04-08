@@ -17,11 +17,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="651.0" prefWidth="1023.0" stylesheets="@../../../css/edit.css" xmlns:controller="com.example" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.rdcompiler.MainSceneController">
 
    <center>
-      <TextArea fx:id="txtAreaCode" onKeyReleased="#evtKeyReleased" prefHeight="200.0" prefWidth="200.0" promptText="1" styleClass="text-area" BorderPane.alignment="CENTER" />
+      <TextArea fx:id="txtAreaCode" onKeyReleased="#evtKeyReleased" prefHeight="200.0" prefWidth="200.0" styleClass="text-area" BorderPane.alignment="CENTER" />
    </center>
    <left>
       <TextArea fx:id="txtAreaRow" disable="true" editable="false" prefHeight="626.0" prefWidth="41.0" stylesheets="@../../../css/edit.css" text="1" BorderPane.alignment="CENTER">

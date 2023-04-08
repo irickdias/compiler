@@ -135,15 +135,17 @@ public class MainSceneController implements Initializable {
                 {
                     //System.out.println("ERRO LEXICO: " + error.getMsg());
                     Text txt = new Text("ERRO LEXICO na linha " +error.getLinha() + ": " + error.getMsg());
-                    txt.setFont(new Font(12));
+                    txt.setFont(new Font(14));
                     txt.setFill(Color.RED);
+                    txt.setStyle("-fx-font-weight: bold");
                     flowPaneErros.getChildren().add(txt);
                 }
                 catch (ErroSintatico errorS)
                 {
                     Text txt = new Text("ERRO SINTATICO na linha " + errorS.getLinha() + ": " + errorS.getMsg());
-                    txt.setFont(new Font(12));
+                    txt.setFont(new Font(14));
                     txt.setFill(Color.RED);
+                    txt.setStyle("-fx-font-weight: bold");
                     flowPaneErros.getChildren().add(txt);
                 }
 
@@ -154,8 +156,9 @@ public class MainSceneController implements Initializable {
 
             for (Token token : tokens) {
                 Text txt = new Text(token.toString());
-                txt.setFont(new Font(12));
+                txt.setFont(new Font(14));
                 txt.setFill(Color.GREEN);
+                txt.setStyle("-fx-font-weight: bold");
                 flowPaneTokens.getChildren().add(txt);
                 //flowTeste.getChildren().add(txt);
             }
