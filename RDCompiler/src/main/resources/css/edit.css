@@ -10,8 +10,11 @@
 }
 
 .text-area {
+
     text-area-background: "#171717";
     -fx-text-fill: "#fff";
+    -fx-background-color: transparent, "#171717", transparent, transparent;
+    -fx-background-radius: 0, 0, 0, 0;
 }
 
 .text-area:disabled {
@@ -23,7 +26,11 @@
 .text-area .content {
     -fx-background-color: text-area-background ;
     -fx-border-color: "#000";
+
 }
+/*.text-area:focused .content {
+    -fx-background-color: transparent, black, transparent, black;
+}*/
 
 
 .button {
