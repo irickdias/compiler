@@ -295,6 +295,7 @@ public class AnalisadorSintatico extends MainSceneController {
 //                    tempToken = tempAnaLexi.nextToken();
 //                }
 
+                // inclusive, pode ser um if de novo
                 P();
 
                 token = anaLexi.nextToken(); tokens.add(token);

@@ -39,6 +39,7 @@ public class MainSceneController implements Initializable {
     private int totRow = 1;
     //private List<String> reserved;
     private String term = "";
+    private boolean success_flag = true;
 
     public MainSceneController() {
     }
@@ -105,6 +106,10 @@ public class MainSceneController implements Initializable {
         String code = txtAreaCode.getText();
         //String token = "";
         analisadorLexico(code);
+        if(success_flag)
+            compileSuccess();
+        else
+            compileFailure();
 
     }
 
@@ -134,6 +139,7 @@ public class MainSceneController implements Initializable {
                 catch(ErroLexico error)
                 {
                     //System.out.println("ERRO LEXICO: " + error.getMsg());
+                    success_flag = false;
                     Text txt = new Text("ERRO LEXICO na linha " +error.getLinha() + ": " + error.getMsg());
                     txt.setFont(new Font(14));
                     txt.setFill(Color.RED);
@@ -142,6 +148,7 @@ public class MainSceneController implements Initializable {
                 }
                 catch (ErroSintatico errorS)
                 {
+                    success_flag = false;
                     Text txt = new Text("ERRO SINTATICO na linha " + errorS.getLinha() + ": " + errorS.getMsg());
                     txt.setFont(new Font(14));
                     txt.setFill(Color.RED);
@@ -168,6 +175,18 @@ public class MainSceneController implements Initializable {
             System.out.println(e.getMessage());
         }
 
+    }
+
+    public void compileSuccess()
+    {
+        JOptionPane.showMessageDialog(null, "Código compilado com Sucesso!", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
+
+    }
+
+    public void compileFailure()
+    {
+        JOptionPane.showMessageDialog(null, "Código compilado com Erros!", "ERROR", JOptionPane.ERROR_MESSAGE);
+        success_flag = true;
     }
 
     @FXML
