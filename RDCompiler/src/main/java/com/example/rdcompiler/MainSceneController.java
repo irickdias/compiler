@@ -104,8 +104,14 @@ public class MainSceneController implements Initializable {
     public void evtCompile(ActionEvent event)
     {
         String code = txtAreaCode.getText();
+
+        // Limpa os FlowPane mostrando os tokens e erros
+        flowPaneTokens.getChildren().clear();
+        flowPaneErros.getChildren().clear();
+
+
         //String token = "";
-        analisadorLexico(code);
+        analisadorSintatico(code);
         if(success_flag)
             compileSuccess();
         else
@@ -113,7 +119,7 @@ public class MainSceneController implements Initializable {
 
     }
 
-    public void analisadorLexico(String code)
+    public void analisadorSintatico(String code)
     {
         try
         {
