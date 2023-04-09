@@ -250,9 +250,14 @@ public class AnalisadorSintatico extends MainSceneController {
                     }
                     else
                     {
-                        tempAnaLexi = anaLexi; // copia o abjeto
-                        tempToken = tempAnaLexi.nextToken();
-                        if(tempToken.getType() == Token.TKN_ELSE)
+//                        tempAnaLexi = anaLexi; // copia o abjeto
+//                        tempToken = tempAnaLexi.nextToken();
+
+                        int savePos = anaLexi.getPos(); // salva posição que está  referenete ao vetor de caracteres
+                        Token tempToken = anaLexi.nextToken(); // visualiza o proximo token
+                        anaLexi.setPos(savePos); // volta para a posição que estava antes
+
+                        if(tempToken != null && tempToken.getType() == Token.TKN_ELSE)
                             CONDICIONAL_ELSE();
                         else
                             FIMESTRUTURA();
@@ -538,8 +543,8 @@ public class AnalisadorSintatico extends MainSceneController {
             else
             {
                 // testar os tokens da frente para saber se tem mais linhas de comando
-                tempAnaLexi = anaLexi; // copia o abjeto
-                tempToken = tempAnaLexi.nextToken();
+                //tempAnaLexi = anaLexi; // copia o abjeto
+                //tempToken = tempAnaLexi.nextToken();
                 // copiar objeto nao funcionou
 
                 // Possivel solução 1: tentar criar uma nova instancia para p tempAnaLexi, e então copiar o objeto
@@ -548,6 +553,10 @@ public class AnalisadorSintatico extends MainSceneController {
                 // e quando voltar, setar novamente o pos, com o pos salvo previamente
                 // anaLexi.setPos(savePos);
                 // e continua o programa
+
+                int savePos = anaLexi.getPos(); // salva posição que está  referenete ao vetor de caracteres
+                Token tempToken = anaLexi.nextToken(); // visualiza o proximo token
+                anaLexi.setPos(savePos); // volta para a posição que estava antes
 
                 if(tempToken != null && (tempToken.getType() == Token.TKN_ID || tempToken.getType() == Token.TKN_IF ||
                         tempToken.getType() == Token.TKN_FOR || tempToken.getType() == Token.TKN_WHILE ||
@@ -561,12 +570,16 @@ public class AnalisadorSintatico extends MainSceneController {
 
     public void FIMESTRUTURA()
     {
-        tempAnaLexi = anaLexi; // copia o abjeto
-        tempToken = tempAnaLexi.nextToken();
+//        tempAnaLexi = anaLexi; // copia o abjeto
+//        tempToken = tempAnaLexi.nextToken();
 
-        if(tempToken.getType() == Token.TKN_ID || tempToken.getType() == Token.TKN_IF ||
+        int savePos = anaLexi.getPos(); // salva posição que está  referenete ao vetor de caracteres
+        Token tempToken = anaLexi.nextToken(); // visualiza o proximo token
+        anaLexi.setPos(savePos); // volta para a posição que estava antes
+
+        if(tempToken != null && (tempToken.getType() == Token.TKN_ID || tempToken.getType() == Token.TKN_IF ||
                 tempToken.getType() == Token.TKN_FOR || tempToken.getType() == Token.TKN_WHILE ||
-                tempToken.getType() == Token.TKN_TIPO)
+                tempToken.getType() == Token.TKN_TIPO))
             P();
 
     }

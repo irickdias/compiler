@@ -113,12 +113,12 @@ public class AnalisadorLexico {
         return content[pos++];
     }
 
-    private int getPos()
+    public int getPos()
     {
         return pos;
     }
 
-    private void setPos(int p)
+    public void setPos(int p)
     {
         this.pos = p;
     }
@@ -171,6 +171,7 @@ public class AnalisadorLexico {
                         else if (isOperatorR(current))
                         {
                             estado = 5;
+                            term += current;
                             ope_rel_count++;
                         }
                         else
