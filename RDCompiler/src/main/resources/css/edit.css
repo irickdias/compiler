@@ -10,7 +10,7 @@
 }
 
 .text-area {
-    text-area-background: "#171717";
+    text-area-background: transparent, "#171717", transparent, "#171717";
     -fx-text-fill: "#fff";
 }
 
