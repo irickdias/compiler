@@ -210,10 +210,10 @@ public class AnalisadorLexico {
                         term += current;
                     }
                     else if(isSpace(current) || isOperatorR(current) || current == '\0' || isEqualSign(current) ||
-                            isDotComma(current) || isComma(current) || isParOpener(current)  )
+                            isDotComma(current) || isComma(current) || isParOpener(current) || isParCloser(current) )
                     {
                         //estado = 2;
-                        if(current != '\u0000')
+                        if(current != '\u0000' && current!='\n')
                             backChar();
 
                         token = new Token();
@@ -256,7 +256,7 @@ public class AnalisadorLexico {
 //                        backChar(); // volta uma posição, depois de ler \n
 //                    else
 //                        if(eof() && (isDotComma(current)))
-                    if(current != '\u0000')
+                    if(current != '\u0000' && current!='\n')
                         backChar();
 
                     token = new Token();
@@ -288,8 +288,9 @@ public class AnalisadorLexico {
                     else
                     //if(isSpace(current) || isComma(current) || isDotComma(current))
                     {
+                        if(current!='\u0000' && current!='\n')
+                            backChar();
 
-                        backChar();
                         token = new Token();
                         token.setLinha(linha);
                         token.setType(Token.TKN_NUM);
@@ -310,7 +311,7 @@ public class AnalisadorLexico {
                 case 5:
                     //term += current;
 
-                    if(current != '\u0000')
+                    if(current != '\u0000' && current!='\n')
                         backChar();
 
                     if(isOperatorR(current) && ope_rel_count < 3)
@@ -368,7 +369,7 @@ public class AnalisadorLexico {
                     return token;
 
                 case 8:
-                    if(current != '\u0000')
+                    if(current != '\u0000' && current!='\n')
                         backChar();
 
                     token = new Token();
@@ -411,6 +412,7 @@ public class AnalisadorLexico {
         {
             sync = nextChar();
 
-        } while(sync != ' ' && !isSpace(sync) && !isDotComma(sync));
+        } while(sync != ' ' && !isSpace(sync) && !isDotComma(sync)
+                && !isOperatorA(sync) && !isOperatorR(sync) && !isEqualSign(sync));
     }
 }
