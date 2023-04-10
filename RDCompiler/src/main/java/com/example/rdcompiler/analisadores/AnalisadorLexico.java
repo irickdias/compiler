@@ -113,12 +113,12 @@ public class AnalisadorLexico {
         return content[pos++];
     }
 
-    private int getPos()
+    public int getPos()
     {
         return pos;
     }
 
-    private void setPos(int p)
+    public void setPos(int p)
     {
         this.pos = p;
     }
@@ -171,6 +171,7 @@ public class AnalisadorLexico {
                         else if (isOperatorR(current))
                         {
                             estado = 5;
+                            term += current;
                             ope_rel_count++;
                         }
                         else
@@ -208,8 +209,8 @@ public class AnalisadorLexico {
                         estado = 1;
                         term += current;
                     }
-                    else if(isSpace(current) || isOperatorR(current) || current == '\0' ||
-                            isDotComma(current) || isComma(current) || isParOpener(current) )
+                    else if(isSpace(current) || isOperatorR(current) || current == '\0' || isEqualSign(current) ||
+                            isDotComma(current) || isComma(current) || isParOpener(current)  )
                     {
                         //estado = 2;
                         if(current != '\u0000')
@@ -308,6 +309,9 @@ public class AnalisadorLexico {
 
                 case 5:
                     //term += current;
+
+                    if(current != '\u0000')
+                        backChar();
 
                     if(isOperatorR(current) && ope_rel_count < 3)
                     {
