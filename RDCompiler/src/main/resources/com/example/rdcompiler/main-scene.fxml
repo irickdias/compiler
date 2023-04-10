@@ -6,6 +6,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
@@ -36,8 +37,9 @@
               <menus>
                 <Menu mnemonicParsing="false" text="Arquivo">
                   <items>
-                    <MenuItem mnemonicParsing="false" onAction="#evtAbrir" text="Abrir" />
+                    <MenuItem mnemonicParsing="false" onAction="#evtAbrir" text="Abrir..." />
                         <MenuItem mnemonicParsing="false" onAction="#evtSalvar" text="Salvar" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#evtFechar" text="Fechar" />
                   </items>
                 </Menu>
