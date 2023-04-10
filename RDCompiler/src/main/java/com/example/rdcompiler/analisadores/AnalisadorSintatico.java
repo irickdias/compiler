@@ -27,6 +27,7 @@ public class AnalisadorSintatico extends MainSceneController {
 
     private int linha;
     private int lastLinha;
+    private int id_call_controll = 0;
 
 
 
@@ -122,6 +123,7 @@ public class AnalisadorSintatico extends MainSceneController {
 
     public void IDENTIFICADOR()
     {
+        int firstCall = id_call_controll;
         token = anaLexi.nextToken(); tokens.add(token);
 
         if(for_flag && token.getType() == Token.TKN_ATRI)
@@ -131,6 +133,7 @@ public class AnalisadorSintatico extends MainSceneController {
 
         if(declaracao_flag && token != null && token.getType() == Token.TKN_PONTO_V) // quer continuar declarando variavel
         {
+            id_call_controll++;
             // faz leitura do proximo token, que deverá ser um <identificador>
             // e chama recursivamente a função IDENTIFICADOR()
             token = anaLexi.nextToken(); tokens.add(token);
@@ -147,8 +150,12 @@ public class AnalisadorSintatico extends MainSceneController {
 
         }
 
+        if(firstCall == 0)
+        {
+            id_call_controll = 0;
+            FIMLINHA();
+        }
 
-        FIMLINHA();
     }
 
     public void ATRIBUICAO(){
