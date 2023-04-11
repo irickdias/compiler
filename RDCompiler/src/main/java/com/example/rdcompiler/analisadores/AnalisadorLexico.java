@@ -14,6 +14,7 @@ public class AnalisadorLexico {
     private List<String> reserved;
     private List<String> tipos;
     private int linha = 1;
+    private boolean temporario = false;
 
 
 
@@ -123,6 +124,14 @@ public class AnalisadorLexico {
         this.pos = p;
     }
 
+    public boolean isTemporario() {
+        return temporario;
+    }
+
+    public void setTemporario(boolean temporario) {
+        this.temporario = temporario;
+    }
+
     public Token nextToken() // automato do analizador léxico
     {
         char current;
@@ -142,11 +151,11 @@ public class AnalisadorLexico {
 
             current = nextChar();
             //'\u0000' = fim de linha
-            if(current == '\n')
-            {
-
-                linha++;
-            }
+//            if(current == '\n')
+//            {
+//
+//                linha++;
+//            }
 
 
             switch(estado)
@@ -167,7 +176,11 @@ public class AnalisadorLexico {
                             term += current;
                         }
                         else if (isSpace(current)) // algum tipo de espaço (\n \t \r ou espaço normal), permanece em 0
+                        {
                             estado = 0;
+                            if(!isTemporario() && current=='\n')
+                                linha++;
+                        }
                         else if (isOperatorR(current))
                         {
                             estado = 5;
@@ -337,6 +350,10 @@ public class AnalisadorLexico {
                 case 6:
                     token = new Token();
                     token.setLinha(linha);
+
+                    if(!isTemporario() && current == '\n')
+                        linha++;
+
                     if(isDotComma(pontuacao))
                     {
                         token.setType(Token.TKN_PONTO_PV);
@@ -371,6 +388,9 @@ public class AnalisadorLexico {
                 case 8:
                     if(current != '\u0000' && current!='\n')
                         backChar();
+
+                    if(!isTemporario() && current == '\n')
+                        linha++;
 
                     token = new Token();
                     token.setLinha(linha);

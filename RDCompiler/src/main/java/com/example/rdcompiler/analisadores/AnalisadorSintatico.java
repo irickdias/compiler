@@ -519,7 +519,9 @@ public class AnalisadorSintatico extends MainSceneController {
                     if(token.getType() != Token.TKN_FECHA_CHA) // precisa ser um }
                     {
                         int saveLinha = token.getLinha();
+                        //anaLexi.setTemporario(true);
                         syncTokens();
+                        //anaLexi.setTemporario(false);
                         throw new ErroSintatico(saveLinha, "Faltando fechar chaves no comando 'while'!");
                     }
                     else
@@ -563,8 +565,10 @@ public class AnalisadorSintatico extends MainSceneController {
                 // e continua o programa
 
                 int savePos = anaLexi.getPos(); // salva posição que está  referenete ao vetor de caracteres
+                anaLexi.setTemporario(true);
                 Token tempToken = anaLexi.nextToken(); // visualiza o proximo token
                 anaLexi.setPos(savePos); // volta para a posição que estava antes
+                anaLexi.setTemporario(false);
 
                 if(tempToken != null && (tempToken.getType() == Token.TKN_ID || tempToken.getType() == Token.TKN_IF ||
                         tempToken.getType() == Token.TKN_FOR || tempToken.getType() == Token.TKN_WHILE ||
@@ -582,8 +586,10 @@ public class AnalisadorSintatico extends MainSceneController {
 //        tempToken = tempAnaLexi.nextToken();
 
         int savePos = anaLexi.getPos(); // salva posição que está  referenete ao vetor de caracteres
+        anaLexi.setTemporario(true);
         Token tempToken = anaLexi.nextToken(); // visualiza o proximo token
         anaLexi.setPos(savePos); // volta para a posição que estava antes
+        anaLexi.setTemporario(false);
 
         if(tempToken != null && (tempToken.getType() == Token.TKN_ID || tempToken.getType() == Token.TKN_IF ||
                 tempToken.getType() == Token.TKN_FOR || tempToken.getType() == Token.TKN_WHILE ||
