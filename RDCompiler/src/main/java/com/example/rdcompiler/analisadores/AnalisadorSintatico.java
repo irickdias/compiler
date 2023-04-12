@@ -20,7 +20,9 @@ public class AnalisadorSintatico extends MainSceneController {
     private boolean declaracao_flag = false;
     private boolean for_flag = false;
     private boolean fim_programa = false;
-
+    private boolean chaves_aberta = false;
+    private boolean if_flag = false;
+    private boolean else_flag = false;
     public boolean isFim_programa() {
         return fim_programa;
     }
@@ -80,7 +82,7 @@ public class AnalisadorSintatico extends MainSceneController {
 
     };
 
-    public void DECLARACAO()
+    public void DECLARACAO() //int x = 0 ;
     {
         // se é uma declaração, precisa inicialmente
         // de um <identificador>, para depois chamar ATRIBUICAO() se preciso
@@ -131,7 +133,7 @@ public class AnalisadorSintatico extends MainSceneController {
         else */
         if(token != null && token.getType() == Token.TKN_ATRI)
             ATRIBUICAO();
-
+        // tratar erro aqui
         if(declaracao_flag && token != null && token.getType() == Token.TKN_PONTO_V) // quer continuar declarando variavel
         {
             id_call_controll++;
@@ -209,6 +211,7 @@ public class AnalisadorSintatico extends MainSceneController {
     }
 
     public void CONDICIONAL_IF(){
+        if_flag = true;
         token = anaLexi.nextToken(); // precisa ser um (
         tokens.add(token);
 
@@ -258,7 +261,7 @@ public class AnalisadorSintatico extends MainSceneController {
 //                        tempAnaLexi = anaLexi; // copia o abjeto
 //                        tempToken = tempAnaLexi.nextToken();
 //                    }
-
+                    chaves_aberta = true;
                     P();
 
                     token = anaLexi.nextToken(); tokens.add(token);
@@ -273,7 +276,8 @@ public class AnalisadorSintatico extends MainSceneController {
                     {
 //                        tempAnaLexi = anaLexi; // copia o abjeto
 //                        tempToken = tempAnaLexi.nextToken();
-
+                        if_flag = false;
+                        chaves_aberta = false;
                         int savePos = anaLexi.getPos(); // salva posição que está  referenete ao vetor de caracteres
                         Token tempToken = anaLexi.nextToken(); // visualiza o proximo token
                         anaLexi.setPos(savePos); // volta para a posição que estava antes
@@ -291,6 +295,7 @@ public class AnalisadorSintatico extends MainSceneController {
 
     public void CONDICIONAL_ELSE()
     {
+        else_flag = true;
         token = anaLexi.nextToken(); // consome um TKN_ELSE
         tokens.add(token);
 
@@ -317,6 +322,7 @@ public class AnalisadorSintatico extends MainSceneController {
 //                }
 
                 // inclusive, pode ser um if de novo
+                chaves_aberta = true;
                 P();
 
                 token = anaLexi.nextToken(); tokens.add(token);
@@ -328,7 +334,12 @@ public class AnalisadorSintatico extends MainSceneController {
                     throw new ErroSintatico(saveLinha, "Faltando fechar chaves!");
                 }
                 else
+                {
+                    else_flag = false;
+                    chaves_aberta = false;
                     FIMESTRUTURA();
+                }
+
             }
         }
     }
@@ -489,7 +500,7 @@ public class AnalisadorSintatico extends MainSceneController {
                         }
                         else
                         {
-
+                            chaves_aberta = true;
                             P();
 
                             token = anaLexi.nextToken(); tokens.add(token);
@@ -502,7 +513,11 @@ public class AnalisadorSintatico extends MainSceneController {
                                 throw new ErroSintatico(saveLinha,"Faltando fechar chaves no comando 'for'!");
                             }
                             else
+                            {
+                                chaves_aberta = false;
                                 FIMESTRUTURA();
+                            }
+
 
                         }
                     }
@@ -542,11 +557,11 @@ public class AnalisadorSintatico extends MainSceneController {
                 }
                 else
                 {
-
+                    chaves_aberta = true;
                     P();
 
                     token = anaLexi.nextToken(); tokens.add(token);
-                    if(token.getType() != Token.TKN_FECHA_CHA) // precisa ser um }
+                    if(token != null && token.getType() != Token.TKN_FECHA_CHA) // precisa ser um }
                     {
                         int saveLinha = token.getLinha();
                         //anaLexi.setTemporario(true);
@@ -555,7 +570,11 @@ public class AnalisadorSintatico extends MainSceneController {
                         throw new ErroSintatico(saveLinha, "Faltando fechar chaves no comando 'while'!");
                     }
                     else
+                    {
+                        chaves_aberta = false;
                         FIMESTRUTURA();
+                    }
+
 
                 }
             }
@@ -595,6 +614,10 @@ public class AnalisadorSintatico extends MainSceneController {
                 // anaLexi.setPos(savePos);
                 // e continua o programa
 
+//                if(chaves_aberta)
+//                {
+//                    token = anaLexi.nextToken();
+//                }
                 int savePos = anaLexi.getPos(); // salva posição que está  referenete ao vetor de caracteres
                 anaLexi.setTemporario(true);
                 Token tempToken = anaLexi.nextToken(); // visualiza o proximo token
@@ -605,6 +628,8 @@ public class AnalisadorSintatico extends MainSceneController {
                         tempToken.getType() == Token.TKN_FOR || tempToken.getType() == Token.TKN_WHILE ||
                         tempToken.getType() == Token.TKN_TIPO))
                     P();
+                else if (tempToken != null && !if_flag && !else_flag && tempToken.getType()== Token.TKN_FECHA_CHA)
+                    token = anaLexi.nextToken();
             }
         }
 
@@ -647,6 +672,10 @@ public class AnalisadorSintatico extends MainSceneController {
 //        {
 //            token = anaLexi.nextToken();
 //        } while(token != null && token.getType() != Token.TKN_PONTO_PV && token.getType() != Token.TKN_ABRE_CHA && token.getType() != Token.TKN_FECHA_CHA);
+
+
+
+        // verificar se em em pontosVirgulas, se o proximo for '}', faz um flag de chaves abertas
     }
 
     public List<Token> getTokens() {

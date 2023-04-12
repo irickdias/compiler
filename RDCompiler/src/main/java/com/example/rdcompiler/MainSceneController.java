@@ -168,6 +168,8 @@ public class MainSceneController implements Initializable {
             // mostra tokens na tela
             List<Token> tokens = as.getTokens();
 
+            System.out.println(tokens.size());
+
             for (Token token : tokens) {
                 Text txt = new Text(token.toString());
                 txt.setFont(new Font(14));
@@ -176,6 +178,15 @@ public class MainSceneController implements Initializable {
                 flowPaneTokens.getChildren().add(txt);
                 //flowTeste.getChildren().add(txt);
             }
+
+//            for (Token token : tokens) {
+//                Text txt = new Text(token.toString());
+//                txt.setFont(new Font(14));
+//                txt.setFill(Color.GREEN);
+//                txt.setStyle("-fx-font-weight: bold");
+//                flowPaneTokens.getChildren().add(txt);
+//                //flowTeste.getChildren().add(txt);
+//            }
 
         }
         catch (Exception e) {
