@@ -126,9 +126,10 @@ public class AnalisadorSintatico extends MainSceneController {
         int firstCall = id_call_controll;
         token = anaLexi.nextToken(); tokens.add(token);
 
-        if(for_flag && token.getType() == Token.TKN_ATRI)
+        /*if(for_flag && token.getType() == Token.TKN_ATRI)
             ATRIBUICAO_FOR();
-        else if(token != null && token.getType() == Token.TKN_ATRI)
+        else */
+        if(token != null && token.getType() == Token.TKN_ATRI)
             ATRIBUICAO();
 
         if(declaracao_flag && token != null && token.getType() == Token.TKN_PONTO_V) // quer continuar declarando variavel
@@ -150,7 +151,7 @@ public class AnalisadorSintatico extends MainSceneController {
 
         }
 
-        if(firstCall == 0)
+        if(firstCall == 0 /*&& !for_flag*/)
         {
             id_call_controll = 0;
             FIMLINHA();
@@ -164,7 +165,8 @@ public class AnalisadorSintatico extends MainSceneController {
         // VALOR() fará reconhecimento se o token é <identificador ou numero>
         VALOR();
         OPERADOR_A();
-        if(token.getType() != Token.TKN_PONTO_PV && token.getType()  != Token.TKN_PONTO_V)
+        if(token.getType() != Token.TKN_PONTO_PV && token.getType()  != Token.TKN_PONTO_V
+                /*&& token.getType()  != Token.TKN_FECHA_PAR*/)
             ATRIBUICAO();
 
 
@@ -172,12 +174,24 @@ public class AnalisadorSintatico extends MainSceneController {
 
     public void ATRIBUICAO_FOR()
     {
+        token = anaLexi.nextToken(); tokens.add(token);
 
+        // VALOR() fará reconhecimento se o token é <identificador ou numero>
+        VALOR();
+        OPERADOR_A();
     }
 
     public void OPERADOR_A()
     {
         token = anaLexi.nextToken(); tokens.add(token);
+        /*if(for_flag && token.getType() != Token.TKN_OPE_ARI && token.getType() != Token.TKN_FECHA_PAR)
+        {
+            int saveLinha = token.getLinha();
+            syncTokens();
+            //int saveLinha = token.getLinha();
+            throw new ErroSintatico(saveLinha, "Operador Aritmético não reconhecido!");
+        }
+        else*/
         if(token.getType() != Token.TKN_OPE_ARI && token.getType() != Token.TKN_PONTO_PV && token.getType() != Token.TKN_PONTO_V)
         {
             int saveLinha = token.getLinha();
@@ -393,6 +407,7 @@ public class AnalisadorSintatico extends MainSceneController {
         else
         {
             token = anaLexi.nextToken(); tokens.add(token);
+            for_flag = true;
             if(token.getType() == Token.TKN_TIPO)
                 DECLARACAO();
             else if(token.getType() == Token.TKN_ID)
@@ -405,6 +420,16 @@ public class AnalisadorSintatico extends MainSceneController {
                 //int saveLinha = token.getLinha();
                 throw new ErroSintatico(saveLinha, "Estrutura do laço 'for' mal feita! Variavel de indice esperada!");
             }
+            for_flag = false;
+
+//            token = anaLexi.nextToken(); tokens.add(token);
+//            if(token != null && token.getType() != Token.TKN_PONTO_PV)
+//            {
+//                int saveLinha = token.getLinha();
+//                syncTokens();
+//                //int saveLinha = token.getLinha();
+//                throw new ErroSintatico(saveLinha, "';' faltando na variavel de índice do comando 'for'");
+//            }
 
             ER();
             token = anaLexi.nextToken(); tokens.add(token); // precisa ler um ';' apos a condicao de parada do for
@@ -434,6 +459,11 @@ public class AnalisadorSintatico extends MainSceneController {
                 else
                 {
                     // ultima condicao de incremento não precisa de ;
+
+//                    for_flag = true;
+//                    IDENTIFICADOR();
+//                    for_flag = false;
+
 
                     // agora se espera um )
 
@@ -545,6 +575,7 @@ public class AnalisadorSintatico extends MainSceneController {
         }
         else
         {
+
             if(token.getType() != Token.TKN_PONTO_PV)
             {
                 syncTokens();
@@ -570,7 +601,7 @@ public class AnalisadorSintatico extends MainSceneController {
                 anaLexi.setPos(savePos); // volta para a posição que estava antes
                 anaLexi.setTemporario(false);
 
-                if(tempToken != null && (tempToken.getType() == Token.TKN_ID || tempToken.getType() == Token.TKN_IF ||
+                if(tempToken != null && !for_flag && (tempToken.getType() == Token.TKN_ID || tempToken.getType() == Token.TKN_IF ||
                         tempToken.getType() == Token.TKN_FOR || tempToken.getType() == Token.TKN_WHILE ||
                         tempToken.getType() == Token.TKN_TIPO))
                     P();

@@ -151,6 +151,7 @@ public class MainSceneController implements Initializable {
                     txt.setFill(Color.RED);
                     txt.setStyle("-fx-font-weight: bold");
                     flowPaneErros.getChildren().add(txt);
+                    //as.syncTokens();
                 }
                 catch (ErroSintatico errorS)
                 {
