@@ -595,10 +595,21 @@ public class AnalisadorSintatico extends MainSceneController {
         else
         {
 
-            if(token.getType() != Token.TKN_PONTO_PV)
+            if(token.getType() != Token.TKN_PONTO_PV && token.getType() == Token.TKN_NUM)
             {
                 syncTokens();
-                throw new ErroSintatico(token.getLinha(), "Faltando ';'");
+                // linha em que estava o penultimo token reconhecido
+
+                throw new ErroSintatico(token.getLinha(), "Faltando '=' depois do identificador");
+            }
+            else if(token.getType() != Token.TKN_PONTO_PV)
+            {
+                syncTokens();
+                //int li = tokens.get(tokens.size()-1).getLinha();
+
+                // size == 3, então penultimo é -2, já que os index estão em 0 1 2 ...
+                int li = tokens.get(tokens.size()-2).getLinha();
+                throw new ErroSintatico(li, "Faltando ';'");
             }
             else
             {
@@ -666,6 +677,7 @@ public class AnalisadorSintatico extends MainSceneController {
 
     public void syncTokens()
     {
+        // melhorar lógica de sincronização
         while(token != null && token.getType() != Token.TKN_PONTO_PV && token.getType() != Token.TKN_ABRE_CHA && token.getType() != Token.TKN_FECHA_CHA)
             token = anaLexi.nextToken();
 //        do

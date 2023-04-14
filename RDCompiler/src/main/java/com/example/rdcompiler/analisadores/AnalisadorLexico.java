@@ -229,9 +229,15 @@ public class AnalisadorLexico {
                         if(current != '\u0000' && current!='\n')
                             backChar();
 
+                        // depois de atribuir a linha atual para o token
+
                         token = new Token();
                         token.setText(term);
                         token.setLinha(linha);
+
+                        if(!isTemporario() && current == '\n')
+                            linha++;
+
                         if(tipos.contains(term))
                         {
 
@@ -306,6 +312,10 @@ public class AnalisadorLexico {
 
                         token = new Token();
                         token.setLinha(linha);
+
+                        if(!isTemporario() && current == '\n')
+                            linha++;
+
                         token.setType(Token.TKN_NUM);
                         token.setText(term);
                         return token;
@@ -341,6 +351,10 @@ public class AnalisadorLexico {
                     {
                         token = new Token();
                         token.setLinha(linha);
+
+                        if(!isTemporario() && current == '\n')
+                            linha++;
+
                         token.setType(Token.TKN_OPE_REL);
                         token.setText(term);
                         return token;
@@ -383,17 +397,21 @@ public class AnalisadorLexico {
                     token.setType(Token.TKN_OPE_ARI);
                     token.setText(term);
 
+                    if(!isTemporario() && current == '\n')
+                        linha++;
+
                     return token;
 
                 case 8:
                     if(current != '\u0000' && current!='\n')
                         backChar();
 
+                    token = new Token();
+                    token.setLinha(linha);
+
                     if(!isTemporario() && current == '\n')
                         linha++;
 
-                    token = new Token();
-                    token.setLinha(linha);
                     //token.setType(Token.TKN_OPE_ARI);
                     token.setText(term);
                     if(isParOpener(term.charAt(0)))
