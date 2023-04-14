@@ -19,9 +19,16 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
+import javafx.stage.FileChooser;
+
 import javax.swing.JOptionPane;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -222,13 +229,37 @@ public class MainSceneController implements Initializable {
     }
 
 
-    public void evtAbrir(ActionEvent event) {
+    public void evtAbrir(ActionEvent event) throws IOException {
+        FileChooser fileChooser=new FileChooser();
+        fileChooser.setInitialDirectory(new File("c:\\"));
+        fileChooser.getExtensionFilters().addAll(
+//                new FileChooser.ExtensionFilter("All Files", "*.*"),
+//                new FileChooser.ExtensionFilter("JPEG Files", "*.jpeg"),
+//                new FileChooser.ExtensionFilter("JPG Files", "*.jpg"),
+//                new FileChooser.ExtensionFilter("PNG Files", "*.png"),
+//                new FileChooser.ExtensionFilter("GIF Files", "*.gif"));
+                new FileChooser.ExtensionFilter("TXT Files", "*.txt"));
+        File file=fileChooser.showOpenDialog(null);
+
+        if (file!=null)
+        {
+            byte[] content = Files.readAllBytes(Paths.get(file.toURI()));
+            txtAreaCode.setText(new String(content));
+
+        }
     }
 
     public void evtSalvar(ActionEvent event) {
     }
 
     public void evtFechar(ActionEvent event) {
+        if(JOptionPane.showConfirmDialog(null, "Deseja realmente fechar o arquivo?")==JOptionPane.YES_OPTION)
+        {
+            txtAreaCode.setText("");
+            totRow = 1;
+            txtAreaRow.setText("1");
+            //Platform.exit();
+        }
     }
 
     public void evtSave(ActionEvent event) {
