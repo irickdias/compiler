@@ -17,8 +17,6 @@ public class AnalisadorLexico {
     private boolean temporario = false;
 
 
-
-
     public AnalisadorLexico(String code)
     {
         try {
@@ -42,6 +40,15 @@ public class AnalisadorLexico {
             System.out.println(e.getMessage());
         }
     }
+
+    public int getLinha() {
+        return linha;
+    }
+
+    public void setLinha(int linha) {
+        this.linha = linha;
+    }
+
 
     private boolean isDigit(char c)
     {

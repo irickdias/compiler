@@ -130,7 +130,8 @@ public class AnalisadorSintatico extends MainSceneController {
         int firstCall = id_call_controll;
         savePos = anaLexi.getPos();
         token = anaLexi.nextToken(); tokens.add(token);
-        saveLinha = token.getLinha();
+        //saveLinha = token.getLinha();
+        saveLinha = anaLexi.getLinha();
 
         /*if(for_flag && token.getType() == Token.TKN_ATRI)
             ATRIBUICAO_FOR();
@@ -203,7 +204,7 @@ public class AnalisadorSintatico extends MainSceneController {
             int saveLinha = token.getLinha();
             syncTokens();
             //int saveLinha = token.getLinha();
-            throw new ErroSintatico(saveLinha, "Operador Aritmético não reconhecido!");
+            throw new ErroSintatico(saveLinha, "Operador Aritmético não reconhecido ou ';' faltando!");
         }
 
     }
@@ -398,7 +399,7 @@ public class AnalisadorSintatico extends MainSceneController {
                 int saveLinha = token.getLinha();
                 syncTokens();
                 //int saveLinha = token.getLinha();
-                throw new ErroSintatico(saveLinha, "operador relacional não reconhecido ou ponto-virgula faltando");
+                throw new ErroSintatico(saveLinha, "operador relacional não reconhecido");
             }
             else
             {
@@ -612,9 +613,10 @@ public class AnalisadorSintatico extends MainSceneController {
             {
                 anaLexi.setPos(savePos);
                 tokens.remove(tokens.size()-1);
-                //anaLexi.setLinha(saveLinha)
+                int last = tokens.get(tokens.size()-1).getLinha();
+                anaLexi.setLinha(last);
 
-                throw new ErroSintatico(saveLinha, "Faltando ';'");
+                throw new ErroSintatico(last, "Faltando ';'");
             }
             else if(token.getType() != Token.TKN_PONTO_PV)
             {
@@ -627,22 +629,7 @@ public class AnalisadorSintatico extends MainSceneController {
             }
             else
             {
-                // testar os tokens da frente para saber se tem mais linhas de comando
-                //tempAnaLexi = anaLexi; // copia o abjeto
-                //tempToken = tempAnaLexi.nextToken();
-                // copiar objeto nao funcionou
 
-                // Possivel solução 1: tentar criar uma nova instancia para p tempAnaLexi, e então copiar o objeto
-
-                //Possivel solucao 2: salvar o 'pos' atual do anaLexi, andar com o anaLexi normalmente
-                // e quando voltar, setar novamente o pos, com o pos salvo previamente
-                // anaLexi.setPos(savePos);
-                // e continua o programa
-
-//                if(chaves_aberta)
-//                {
-//                    token = anaLexi.nextToken();
-//                }
                 int savePos = anaLexi.getPos(); // salva posição que está  referenete ao vetor de caracteres
                 anaLexi.setTemporario(true);
                 Token tempToken = anaLexi.nextToken(); // visualiza o proximo token
