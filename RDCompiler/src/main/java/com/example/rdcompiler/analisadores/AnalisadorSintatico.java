@@ -30,6 +30,8 @@ public class AnalisadorSintatico extends MainSceneController {
     private int linha;
     private int lastLinha;
     private int id_call_controll = 0;
+    private int savePos;
+    private int saveLinha;
 
 
 
@@ -126,7 +128,9 @@ public class AnalisadorSintatico extends MainSceneController {
     public void IDENTIFICADOR()
     {
         int firstCall = id_call_controll;
+        savePos = anaLexi.getPos();
         token = anaLexi.nextToken(); tokens.add(token);
+        saveLinha = token.getLinha();
 
         /*if(for_flag && token.getType() == Token.TKN_ATRI)
             ATRIBUICAO_FOR();
@@ -394,7 +398,7 @@ public class AnalisadorSintatico extends MainSceneController {
                 int saveLinha = token.getLinha();
                 syncTokens();
                 //int saveLinha = token.getLinha();
-                throw new ErroSintatico(saveLinha, "operador relacional não reconhecido");
+                throw new ErroSintatico(saveLinha, "operador relacional não reconhecido ou ponto-virgula faltando");
             }
             else
             {
@@ -602,6 +606,16 @@ public class AnalisadorSintatico extends MainSceneController {
 
                 throw new ErroSintatico(token.getLinha(), "Faltando '=' depois do identificador");
             }
+            else if(token.getType() != Token.TKN_PONTO_PV && (token.getType() == Token.TKN_ID ||
+                    token.getType() == Token.TKN_IF || token.getType() == Token.TKN_WHILE ||
+                    token.getType() == Token.TKN_FOR))
+            {
+                anaLexi.setPos(savePos);
+                tokens.remove(tokens.size()-1);
+                //anaLexi.setLinha(saveLinha)
+
+                throw new ErroSintatico(saveLinha, "Faltando ';'");
+            }
             else if(token.getType() != Token.TKN_PONTO_PV)
             {
                 syncTokens();
@@ -685,8 +699,29 @@ public class AnalisadorSintatico extends MainSceneController {
 //            token = anaLexi.nextToken();
 //        } while(token != null && token.getType() != Token.TKN_PONTO_PV && token.getType() != Token.TKN_ABRE_CHA && token.getType() != Token.TKN_FECHA_CHA);
 
+        if (token != null && token.getType() == Token.TKN_PONTO_PV)
+        {
+            int savePos = anaLexi.getPos(); // salva posição que está  referenete ao vetor de caracteres
+            anaLexi.setTemporario(true);
+            Token tempToken = anaLexi.nextToken(); // visualiza o proximo token
+            //anaLexi.setPos(savePos); // volta para a posição que estava antes
+            //anaLexi.setTemporario(false);
 
-
+            if (tempToken != null && tempToken.getType() == Token.TKN_FECHA_CHA)
+            {
+                if(!chaves_aberta)
+                {
+                    throw new ErroSintatico(tempToken.getLinha(), "Fecha-chaves avulso no código, verifique a estutura do comando!");
+                }
+                else
+                    chaves_aberta = false;
+            }
+            else
+            {
+                anaLexi.setPos(savePos); // volta para a posição que estava antes
+                anaLexi.setTemporario(false);
+            }
+        }
         // verificar se em em pontosVirgulas, se o proximo for '}', faz um flag de chaves abertas
     }
 
