@@ -654,7 +654,17 @@ public class AnalisadorSintatico extends MainSceneController {
                 else if (tempToken != null && !if_flag && !else_flag && tempToken.getType() == Token.TKN_FECHA_CHA)
                     token = anaLexi.nextToken();
                 else if(tempToken != null && tempToken.getType() == Token.TKN_FECHA_CHA)
+                {
+                    // funciona para o example 1
                     syncTokens();
+
+                    // funciona para o example 2
+                    //anaLexi. setPos(savePos);
+
+                    //POSSIVEL SOLUÇÃO - FAZER UM FLAG DE ERRO NO IF, SE TIVER DADO ERRO NAO IRÁ SEGUIR PELO FLUXO CERTO
+                    // ENTÃO NÃO CHAMARÁ syncTokens
+                    // SE TIVER DADO ERRO EM ALGUMA ESTRUTURA, APENAS VOLTARÁ A POSIÇÃO ORIGINAL ANTES DE LER O TEMPTOKEN
+                }
                 else if (tempToken == null && chaves_aberta)
                     throw new ErroSintatico(MainSceneController.totRow, "Faltando fechar chaves!");
             }

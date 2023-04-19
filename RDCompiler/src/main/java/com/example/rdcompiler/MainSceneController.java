@@ -231,7 +231,7 @@ public class MainSceneController implements Initializable {
 
     public void evtAbrir(ActionEvent event) throws IOException {
         FileChooser fileChooser=new FileChooser();
-        fileChooser.setInitialDirectory(new File("c:\\"));
+        fileChooser.setInitialDirectory(new File("..\\"));
         fileChooser.getExtensionFilters().addAll(
 //                new FileChooser.ExtensionFilter("All Files", "*.*"),
 //                new FileChooser.ExtensionFilter("JPEG Files", "*.jpeg"),
