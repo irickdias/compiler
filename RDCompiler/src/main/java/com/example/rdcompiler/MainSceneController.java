@@ -43,7 +43,7 @@ public class MainSceneController implements Initializable {
     @FXML
     private FlowPane flowPaneTokens, flowPaneErros, flowTeste;
 
-    private int totRow = 1;
+    public static int totRow = 1;
     //private List<String> reserved;
     private String term = "";
     private boolean success_flag = true;

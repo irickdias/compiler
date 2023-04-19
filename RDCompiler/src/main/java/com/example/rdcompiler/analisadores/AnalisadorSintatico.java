@@ -172,15 +172,20 @@ public class AnalisadorSintatico extends MainSceneController {
         // VALOR() fará reconhecimento se o token é <identificador ou numero>
         VALOR();
         OPERADOR_A();
-        if(token.getType() != Token.TKN_PONTO_PV && token.getType()  != Token.TKN_PONTO_V
-                /*&& token.getType()  != Token.TKN_FECHA_PAR*/)
+//        if(token.getType() != Token.TKN_PONTO_PV && token.getType() != Token.TKN_PONTO_PV && token.getType()  != Token.TKN_PONTO_V
+//                /*&& token.getType()  != Token.TKN_FECHA_PAR*/)
+//            ATRIBUICAO();
+
+        if(token != null && token.getType() == Token.TKN_OPE_ARI)
             ATRIBUICAO();
+
 
 
     }
 
     public void ATRIBUICAO_FOR()
     {
+
         token = anaLexi.nextToken(); tokens.add(token);
 
         // VALOR() fará reconhecimento se o token é <identificador ou numero>
@@ -190,7 +195,9 @@ public class AnalisadorSintatico extends MainSceneController {
 
     public void OPERADOR_A()
     {
+        savePos = anaLexi.getPos();
         token = anaLexi.nextToken(); tokens.add(token);
+        saveLinha = anaLexi.getLinha();
         /*if(for_flag && token.getType() != Token.TKN_OPE_ARI && token.getType() != Token.TKN_FECHA_PAR)
         {
             int saveLinha = token.getLinha();
@@ -199,13 +206,14 @@ public class AnalisadorSintatico extends MainSceneController {
             throw new ErroSintatico(saveLinha, "Operador Aritmético não reconhecido!");
         }
         else*/
-        if(token.getType() != Token.TKN_OPE_ARI && token.getType() != Token.TKN_PONTO_PV && token.getType() != Token.TKN_PONTO_V)
-        {
-            int saveLinha = token.getLinha();
-            syncTokens();
-            //int saveLinha = token.getLinha();
-            throw new ErroSintatico(saveLinha, "Operador Aritmético não reconhecido ou ';' faltando!");
-        }
+//        if(token.getType() != Token.TKN_OPE_ARI && token.getType() != Token.TKN_PONTO_PV && token.getType() != Token.TKN_PONTO_V ||
+//        )
+//        {
+//            int saveLinha = token.getLinha();
+//            syncTokens();
+//            //int saveLinha = token.getLinha();
+//            throw new ErroSintatico(saveLinha, "Operador Aritmético não reconhecido ou ';' faltando!");
+//        }
 
     }
 
@@ -270,7 +278,10 @@ public class AnalisadorSintatico extends MainSceneController {
                     P();
 
                     token = anaLexi.nextToken(); tokens.add(token);
-                    if(token.getType() != Token.TKN_FECHA_CHA) // precisa ser um }
+                    // NAO PRECISA USAR TOKEN != NULL
+                     //  USAR FLAGS DE ERROS EM IF, ELSE, WHILE E FOR
+                    // FAZER A VERIFICACAO DENTRO DO 'FIMLINHA'
+                    if(token != null && token.getType() != Token.TKN_FECHA_CHA) // precisa ser um }
                     {
                         int saveLinha = token.getLinha();
                         syncTokens();
@@ -614,7 +625,7 @@ public class AnalisadorSintatico extends MainSceneController {
                 anaLexi.setPos(savePos);
                 tokens.remove(tokens.size()-1);
                 int last = tokens.get(tokens.size()-1).getLinha();
-                anaLexi.setLinha(last);
+                anaLexi.setLinha(last+1);
 
                 throw new ErroSintatico(last, "Faltando ';'");
             }
@@ -640,8 +651,12 @@ public class AnalisadorSintatico extends MainSceneController {
                         tempToken.getType() == Token.TKN_FOR || tempToken.getType() == Token.TKN_WHILE ||
                         tempToken.getType() == Token.TKN_TIPO))
                     P();
-                else if (tempToken != null && !if_flag && !else_flag && tempToken.getType()== Token.TKN_FECHA_CHA)
+                else if (tempToken != null && !if_flag && !else_flag && tempToken.getType() == Token.TKN_FECHA_CHA)
                     token = anaLexi.nextToken();
+                else if(tempToken != null && tempToken.getType() == Token.TKN_FECHA_CHA)
+                    syncTokens();
+                else if (tempToken == null && chaves_aberta)
+                    throw new ErroSintatico(MainSceneController.totRow, "Faltando fechar chaves!");
             }
         }
 
