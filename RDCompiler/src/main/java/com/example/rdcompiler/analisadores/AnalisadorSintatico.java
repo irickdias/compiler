@@ -23,9 +23,8 @@ public class AnalisadorSintatico extends MainSceneController {
     private boolean chaves_aberta = false;
     private boolean if_flag = false;
     private boolean else_flag = false;
-    public boolean isFim_programa() {
-        return fim_programa;
-    }
+
+    private boolean erro_flag = false;
 
     private int linha;
     private int lastLinha;
@@ -39,6 +38,10 @@ public class AnalisadorSintatico extends MainSceneController {
     public AnalisadorSintatico(AnalisadorLexico al)
     {
         anaLexi = al;
+    }
+
+    public boolean isFim_programa() {
+        return fim_programa;
     }
 
     public int getLinha() {
@@ -74,6 +77,7 @@ public class AnalisadorSintatico extends MainSceneController {
             else
             {
                 // sincroniza tokens
+                erro_flag = true;
                 int saveLinha = token.getLinha();
                 syncTokens();
                 throw new ErroSintatico(saveLinha, "Inicio/caracter de novo comando errado!");
@@ -109,6 +113,7 @@ public class AnalisadorSintatico extends MainSceneController {
                 int saveLinha = token.getLinha();
                 syncTokens();
                 //int saveLinha = token.getLinha();
+                erro_flag = true;
                 throw new ErroSintatico(saveLinha, "Identificador esperado!");
             }
         }
@@ -153,6 +158,7 @@ public class AnalisadorSintatico extends MainSceneController {
                 int saveLinha = token.getLinha();
                 syncTokens();
                 //int saveLinha = token.getLinha();
+                erro_flag = true;
                 throw new ErroSintatico(saveLinha,"Identificador esperado!");
             }
 
@@ -233,6 +239,7 @@ public class AnalisadorSintatico extends MainSceneController {
             int saveLinha = token.getLinha();
             syncTokens();
             //int saveLinha = token.getLinha();
+            //erro_flag = true;
             throw new ErroSintatico(saveLinha, "Abertura de parenteses faltando!");
         }
         else
@@ -292,6 +299,10 @@ public class AnalisadorSintatico extends MainSceneController {
                     {
 //                        tempAnaLexi = anaLexi; // copia o abjeto
 //                        tempToken = tempAnaLexi.nextToken();
+
+                        if(erro_flag)
+                            erro_flag = false;
+
                         if_flag = false;
                         chaves_aberta = false;
                         int savePos = anaLexi.getPos(); // salva posição que está  referenete ao vetor de caracteres
@@ -351,6 +362,9 @@ public class AnalisadorSintatico extends MainSceneController {
                 }
                 else
                 {
+                    if(erro_flag)
+                        erro_flag = false;
+
                     else_flag = false;
                     chaves_aberta = false;
                     FIMESTRUTURA();
@@ -615,7 +629,7 @@ public class AnalisadorSintatico extends MainSceneController {
             {
                 syncTokens();
                 // linha em que estava o penultimo token reconhecido
-
+                erro_flag = true;
                 throw new ErroSintatico(token.getLinha(), "Faltando '=' depois do identificador");
             }
             else if(token.getType() != Token.TKN_PONTO_PV && (token.getType() == Token.TKN_ID ||
@@ -627,6 +641,8 @@ public class AnalisadorSintatico extends MainSceneController {
                 int last = tokens.get(tokens.size()-1).getLinha();
                 anaLexi.setLinha(last+1);
 
+                erro_flag = true;
+
                 throw new ErroSintatico(last, "Faltando ';'");
             }
             else if(token.getType() != Token.TKN_PONTO_PV)
@@ -636,6 +652,8 @@ public class AnalisadorSintatico extends MainSceneController {
 
                 // size == 3, então penultimo é -2, já que os index estão em 0 1 2 ...
                 int li = tokens.get(tokens.size()-2).getLinha();
+                erro_flag = true;
+
                 throw new ErroSintatico(li, "Faltando ';'");
             }
             else
@@ -656,7 +674,7 @@ public class AnalisadorSintatico extends MainSceneController {
                 else if(tempToken != null && tempToken.getType() == Token.TKN_FECHA_CHA)
                 {
                     // funciona para o example 1
-                    syncTokens();
+                    //syncTokens();
 
                     // funciona para o example 2
                     //anaLexi. setPos(savePos);
@@ -664,6 +682,14 @@ public class AnalisadorSintatico extends MainSceneController {
                     //POSSIVEL SOLUÇÃO - FAZER UM FLAG DE ERRO NO IF, SE TIVER DADO ERRO NAO IRÁ SEGUIR PELO FLUXO CERTO
                     // ENTÃO NÃO CHAMARÁ syncTokens
                     // SE TIVER DADO ERRO EM ALGUMA ESTRUTURA, APENAS VOLTARÁ A POSIÇÃO ORIGINAL ANTES DE LER O TEMPTOKEN
+
+                    if(erro_flag)
+                        syncTokens();
+                    else
+                    {
+                        anaLexi.setPos(savePos);
+                    }
+
                 }
                 else if (tempToken == null && chaves_aberta)
                     throw new ErroSintatico(MainSceneController.totRow, "Faltando fechar chaves!");
@@ -721,12 +747,18 @@ public class AnalisadorSintatico extends MainSceneController {
 
             if (tempToken != null && tempToken.getType() == Token.TKN_FECHA_CHA)
             {
+                if(erro_flag)
+                    erro_flag = false;
+
                 if(!chaves_aberta)
                 {
                     throw new ErroSintatico(tempToken.getLinha(), "Fecha-chaves avulso no código, verifique a estutura do comando!");
                 }
                 else
+                {
                     chaves_aberta = false;
+                }
+
             }
             else
             {
