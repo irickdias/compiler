@@ -457,7 +457,6 @@ public class AnalisadorLexico {
         {
             sync = nextChar();
 
-        } while(sync != ' ' && !isSpace(sync) && !isDotComma(sync)
-                && !isOperatorA(sync) && !isOperatorR(sync) && !isEqualSign(sync));
+        } while(!isDotComma(sync));
     }
 }
