@@ -16,7 +16,7 @@ public class AnalisadorLexico {
     private int linha = 1;
     private boolean temporario = false;
     private List<String> linhas = null;
-
+    private int index = 0;
 
     public AnalisadorLexico(String code)
     {
@@ -24,8 +24,9 @@ public class AnalisadorLexico {
             //String txtConteudo;
             //txtConteudo = Files.readString(Paths.get(filename));
             //content = txtConteudo.toCharArray();
-
-            content = code.toCharArray();
+            linhas = List.of(code.split("\n"));
+            //content = code.toCharArray();
+            content = linhas.get(index).toCharArray();
             reserved = new ArrayList<String>();
             reserved.add("int");
             reserved.add("float");
@@ -34,7 +35,7 @@ public class AnalisadorLexico {
             reserved.add("string");
             reserved.add("if");
             reserved.add("while");
-            linhas = List.of(code.split("\n"));
+
 
             tipos = new ArrayList<String>();
             tipos.add("int");
@@ -122,6 +123,20 @@ public class AnalisadorLexico {
             return '\0';
 
         return content[pos++];
+    }
+
+    public List<String> getLinhas() {
+        return linhas;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void nextLinha()
+    {
+        index++;
+        content = linhas.get(index).toCharArray();
     }
 
     public int getPos()

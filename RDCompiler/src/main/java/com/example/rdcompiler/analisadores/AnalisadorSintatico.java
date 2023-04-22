@@ -659,15 +659,16 @@ public class AnalisadorSintatico extends MainSceneController {
             else
             {
 
-                int savePos = anaLexi.getPos(); // salva posição que está  referenete ao vetor de caracteres
-                anaLexi.setTemporario(true);
-                Token tempToken = anaLexi.nextToken(); // visualiza o proximo token
-                anaLexi.setPos(savePos); // volta para a posição que estava antes
-                anaLexi.setTemporario(false);
+//                int savePos = anaLexi.getPos(); // salva posição que está  referenete ao vetor de caracteres
+//                anaLexi.setTemporario(true);
+//                Token tempToken = anaLexi.nextToken(); // visualiza o proximo token
+//                anaLexi.setPos(savePos); // volta para a posição que estava antes
+//                anaLexi.setTemporario(false);
 
-                if(tempToken != null && !for_flag && (tempToken.getType() == Token.TKN_ID || tempToken.getType() == Token.TKN_IF ||
-                        tempToken.getType() == Token.TKN_FOR || tempToken.getType() == Token.TKN_WHILE ||
-                        tempToken.getType() == Token.TKN_TIPO))
+//                if(tempToken != null && !for_flag && (tempToken.getType() == Token.TKN_ID || tempToken.getType() == Token.TKN_IF ||
+//                        tempToken.getType() == Token.TKN_FOR || tempToken.getType() == Token.TKN_WHILE ||
+//                        tempToken.getType() == Token.TKN_TIPO))
+                if(anaLexi.getIndex() < anaLexi.getLinhas().size()-1)
                     P();
                 else if (tempToken != null && !if_flag && !else_flag && tempToken.getType() == Token.TKN_FECHA_CHA)
                     token = anaLexi.nextToken();
