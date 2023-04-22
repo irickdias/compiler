@@ -15,6 +15,7 @@ public class AnalisadorLexico {
     private List<String> tipos;
     private int linha = 1;
     private boolean temporario = false;
+    private List<String> linhas = null;
 
 
     public AnalisadorLexico(String code)
@@ -23,6 +24,7 @@ public class AnalisadorLexico {
             //String txtConteudo;
             //txtConteudo = Files.readString(Paths.get(filename));
             //content = txtConteudo.toCharArray();
+
             content = code.toCharArray();
             reserved = new ArrayList<String>();
             reserved.add("int");
@@ -32,6 +34,7 @@ public class AnalisadorLexico {
             reserved.add("string");
             reserved.add("if");
             reserved.add("while");
+            linhas = List.of(code.split("\n"));
 
             tipos = new ArrayList<String>();
             tipos.add("int");
