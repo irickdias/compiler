@@ -230,6 +230,7 @@ public class MainSceneController implements Initializable {
 
 
     public void evtAbrir(ActionEvent event) throws IOException {
+        txtAreaRow.setText("1");
         FileChooser fileChooser=new FileChooser();
         fileChooser.setInitialDirectory(new File("..\\"));
         fileChooser.getExtensionFilters().addAll(
@@ -247,6 +248,11 @@ public class MainSceneController implements Initializable {
             txtAreaCode.setText(new String(content));
 
         }
+
+        for (int i = 0; i < txtAreaCode.getParagraphs().size()-1 ; i++) {
+            txtAreaRow.setText(txtAreaRow.getText() + "\n" + (i+2));
+        }
+        //txtAreaRow.setText(txtAreaRow.getText() + "\n" + rowCount);
     }
 
     public void evtSalvar(ActionEvent event) {

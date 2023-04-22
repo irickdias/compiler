@@ -32,6 +32,7 @@ public class AnalisadorLexico {
             reserved.add("string");
             reserved.add("if");
             reserved.add("while");
+            reserved.add("for");
 
             tipos = new ArrayList<String>();
             tipos.add("int");
@@ -453,10 +454,18 @@ public class AnalisadorLexico {
     private void syncChar()
     {
         char sync;
+        //String term = "";
         do
         {
             sync = nextChar();
+            //term += sync;
 
-        } while(!isDotComma(sync));
+//            if(sync == ' ')
+//                term = "";
+
+            if (sync == '\n')
+                linha++;
+
+        } while(!isDotComma(sync) && sync != '\n');
     }
 }
