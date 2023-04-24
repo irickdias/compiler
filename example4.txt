@@ -1,0 +1,11 @@
+int variavel;
+
+@ste = 5;
+int a!;
+a = 9 + #;
+
+if ( a < 5) {
+
+	a = 5;
+	b = 85 + 4!2;
+}

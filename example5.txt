@@ -1,0 +1,15 @@
+int variavel , ;
+
+tste = 5;
+
+int a;
+
+a = 9 + te;
+
+99 = teste;
+
+w@ile ( a  5) {
+
+	a = ;
+	b = 85 + 42;
+}

@@ -63,7 +63,7 @@ public class AnalisadorLexico {
 
     private boolean isOperatorR(char c)
     {
-        return c == '>' || c == '<' || c == '!';
+        return c == '>' || c == '<' /*|| c == '!'*/;
     }
 //    private boolean isOperatorR(char c)
 //    {
@@ -112,7 +112,11 @@ public class AnalisadorLexico {
 
     private boolean isEqualSign(char c) {return c == '=';}
 
-
+    private boolean isTrash(char c) {
+        return c == '@' || c == '#' || c == '$' || c == '%' ||
+                c == '¨' || c == '&' || c == '^' || c == '~' ||
+                c == '?' || c == ':' || c == 'º' || c == 'ª' || c == '!';
+    }
 
     private char nextChar()
     {
@@ -140,6 +144,8 @@ public class AnalisadorLexico {
         this.temporario = temporario;
     }
 
+
+
     public Token nextToken() // automato do analizador léxico
     {
         char current;
@@ -148,12 +154,16 @@ public class AnalisadorLexico {
         char pontuacao = 0;
         //int linha = 1;
         int ope_rel_count = 0;
+        int savePos = -1;
 
         if(eof())
             return null;
 
 
         estado = 0; // Estado inicial do automato é 0
+        if(isTemporario())
+            savePos = pos;
+
         while(!eof() || estado != 0)
         {
 
@@ -216,6 +226,11 @@ public class AnalisadorLexico {
                         }
                         else
                         {
+                            if(isTemporario())
+                            {
+                                pos = savePos;
+                                return new Token(0, "");
+                            }
                             syncChar();
                             throw new ErroLexico(linha,"SÍMBOLO DESCONHECIDO!");
                         }
@@ -271,8 +286,15 @@ public class AnalisadorLexico {
                     }
                     else
                     {
+                        if(isTemporario())
+                        {
+                            pos = savePos;
+                            return new Token(0, "");
+                        }
+                        int saveLinha = linha;
                         syncChar();
-                        throw new ErroLexico(linha,"IDENTIFICADOR MAL FORMADO");
+                        //throw new ErroLexico(linha,"IDENTIFICADOR MAL FORMADO");
+                        throw new ErroLexico(saveLinha,"IDENTIFICADOR MAL FORMADO");
                     }
 
 
@@ -306,9 +328,14 @@ public class AnalisadorLexico {
                         estado = 3;
                         term += current;
                     }
-                    else if( isChar(current))
+                    else if( isChar(current) || isTrash(current))
                     {
                         //estado = 4;
+                        if(isTemporario())
+                        {
+                            pos = savePos;
+                            return new Token(0, "");
+                        }
                         syncChar();
                         throw new ErroLexico(linha,"NÚMERO DESCONHECIDO!");
                     }
