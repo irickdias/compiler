@@ -178,12 +178,16 @@ public class MainSceneController implements Initializable {
             System.out.println(tokens.size());
 
             for (Token token : tokens) {
-                Text txt = new Text(token.toString());
-                txt.setFont(new Font(14));
-                txt.setFill(Color.GREEN);
-                txt.setStyle("-fx-font-weight: bold");
-                flowPaneTokens.getChildren().add(txt);
-                //flowTeste.getChildren().add(txt);
+                if(token != null)
+                {
+                    Text txt = new Text(token.toString());
+                    txt.setFont(new Font(14));
+                    txt.setFill(Color.GREEN);
+                    txt.setStyle("-fx-font-weight: bold");
+                    flowPaneTokens.getChildren().add(txt);
+                    //flowTeste.getChildren().add(txt);
+                }
+
             }
 
 //            for (Token token : tokens) {
@@ -194,6 +198,26 @@ public class MainSceneController implements Initializable {
 //                flowPaneTokens.getChildren().add(txt);
 //                //flowTeste.getChildren().add(txt);
 //            }
+
+            List<ErroSemantico> erroS = as.getErrosSemanticos();
+            if(erroS.size() > 0)
+            {
+                for(ErroSemantico es: erroS)
+                {
+                    if(es != null)
+                    {
+                        success_flag = false;
+                        Text txt = new Text("ERRO SEMANTICO na linha " + es.getLinha() + ": " + es.getMsg());
+                        txt.setFont(new Font(14));
+                        txt.setFill(Color.RED);
+                        txt.setStyle("-fx-font-weight: bold");
+                        flowPaneErros.getChildren().add(txt);
+                    }
+
+                }
+            }
+
+
 
         }
         catch (Exception e) {

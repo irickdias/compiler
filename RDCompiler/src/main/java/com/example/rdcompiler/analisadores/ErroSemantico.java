@@ -1,10 +1,10 @@
 package com.example.rdcompiler.analisadores;
 
-public class ErroSintatico extends RuntimeException{
+public class ErroSemantico{
 
     private int linha;
     private String msg;
-    public ErroSintatico(int linha, String msg)
+    public ErroSemantico(int linha, String msg)
     {
         this.linha = linha;
         this.msg = msg;

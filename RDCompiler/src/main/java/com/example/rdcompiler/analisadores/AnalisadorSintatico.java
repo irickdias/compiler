@@ -16,6 +16,7 @@ public class AnalisadorSintatico extends MainSceneController {
     private Token tempToken; // token atual
     private List<String> memoria = new ArrayList<String>();
     private List<Token> tokens = new ArrayList<Token>();
+    private List<Variable> variables = new ArrayList<Variable>();
 
     private boolean declaracao_flag = false;
     private boolean for_flag = false;
@@ -32,6 +33,11 @@ public class AnalisadorSintatico extends MainSceneController {
     private int savePos;
     private int saveLinha;
 
+    private Variable var;
+    private String saveType;
+    private List<ErroSemantico> errosSemanticos = new ArrayList<ErroSemantico>();
+
+    private String saveValue = "";
 
 
     // Analisdaor Sinatico fica chamando o Analisador Lexico toda hora
@@ -62,6 +68,10 @@ public class AnalisadorSintatico extends MainSceneController {
             lastLinha = token.getLinha();
             if(token.getType() == Token.TKN_TIPO) // int, float, double
             {
+                var = new Variable(); // instancia nova variavel
+                variables.add(var); // adiciona na lista de variaveis
+                saveType = token.getText();
+                variables.get(variables.size()-1).setType(saveType); // seta o tipo que foi reconhecido pelo token
                 declaracao_flag = true;
                 DECLARACAO();
             }
@@ -86,7 +96,19 @@ public class AnalisadorSintatico extends MainSceneController {
 
 
 
-    };
+    }
+
+    public boolean checkVariableExistence(String varName)
+    {
+
+        for(Variable v : variables)
+        {
+            if(v.getName().equals(varName))
+                return true;
+        }
+
+        return false;
+    }
 
     public void DECLARACAO() //int x = 0 ;
     {
@@ -104,8 +126,17 @@ public class AnalisadorSintatico extends MainSceneController {
             lastLinha = token.getLinha();
             if(token.getType() == Token.TKN_ID)
             {
-                //DECLARACAO2();
-                IDENTIFICADOR();
+                if( !checkVariableExistence(token.getTypeString()) )
+                {
+                    // nao existe essa variavel na lista, entao seta o nome
+                    variables.get(variables.size()-1).setName(token.getText());
+                    IDENTIFICADOR();
+                }
+                else {
+                    // exclui o ultimo objeto que adicionou
+                    errosSemanticos.add(new ErroSemantico(saveLinha, "Identificador '" + token.getText() + "' já está declarado!"));
+                }
+
                 //FIMLINHA();
             }
             else
@@ -119,15 +150,6 @@ public class AnalisadorSintatico extends MainSceneController {
         }
 
 
-    }
-
-    public void DECLARACAO2()
-    {
-        token = anaLexi.nextToken();
-        if(token.getType() == Token.TKN_ATRI)
-            ATRIBUICAO();
-        else if(token.getType() == Token.TKN_PONTO_V)
-            DECLARACAO();
     }
 
     public void IDENTIFICADOR()
@@ -147,12 +169,31 @@ public class AnalisadorSintatico extends MainSceneController {
         if(declaracao_flag && token != null && token.getType() == Token.TKN_PONTO_V) // quer continuar declarando variavel
         {
             id_call_controll++;
+
+            variables.get(variables.size()-1).setValue(saveValue);
+            saveValue = ""; // reseta o saveValue
+
             // faz leitura do proximo token, que deverá ser um <identificador>
             // e chama recursivamente a função IDENTIFICADOR()
             token = anaLexi.nextToken(); tokens.add(token);
 
             if(token.getType() == Token.TKN_ID)
+            {
+                var = new Variable();
+                variables.add(var);
+                variables.get(variables.size()-1).setType(saveType);
+                if( !checkVariableExistence(token.getText()) )
+                {
+                    // nao existe essa variavel na lista, entao seta o nome
+                    variables.get(variables.size()-1).setName(token.getText());
+                }
+                else
+                {
+                    // exclui o ultimo objeto que adicionou
+                    errosSemanticos.add(new ErroSemantico(saveLinha, "Identificador '" + token.getText() + "' já está declarado!"));
+                }
                 IDENTIFICADOR();
+            }
             else
             {
                 int saveLinha = token.getLinha();
@@ -163,6 +204,9 @@ public class AnalisadorSintatico extends MainSceneController {
             }
 
         }
+
+        variables.get(variables.size()-1).setValue(saveValue);
+        saveValue = ""; // reseta o saveValue
 
         if(firstCall == 0 /*&& !for_flag*/)
         {
@@ -183,7 +227,11 @@ public class AnalisadorSintatico extends MainSceneController {
 //            ATRIBUICAO();
 
         if(token != null && token.getType() == Token.TKN_OPE_ARI)
+        {
+            saveValue += token.getText();
             ATRIBUICAO();
+        }
+
 
 
 
@@ -386,6 +434,21 @@ public class AnalisadorSintatico extends MainSceneController {
         EA();
     }
 
+//    public int getVariableValue(String target)
+//    {
+//        for(Variable v : variables)
+//        {
+
+    public List<ErroSemantico> getErrosSemanticos() {
+        return errosSemanticos;
+    }
+//            if(v.getName().equals(target))
+//                return  v.getValue();
+//        }
+//
+//        return -999;
+//    }
+
     public void VALOR(){
         //token = anaLexi.nextToken();
         if(token.getType() != Token.TKN_ID && token.getType() != Token.TKN_NUM)
@@ -395,6 +458,23 @@ public class AnalisadorSintatico extends MainSceneController {
             //int saveLinha = token.getLinha();
             throw new ErroSintatico(saveLinha, "identificador ou numero esperado!");
         }
+        else { // é identificador ou numero
+
+            saveValue += token.getText();
+
+        }
+
+//        if(token.getType() != Token.TKN_NUM)
+//            variables.get(variables.size()-1).setValue(Integer.parseInt(token.getText()));
+//        else {
+//            int value = getVariableValue(token.getText());
+//            if(value != -999)
+//                variables.get(variables.size()-1).setValue(value);
+//            else { // nao existe declarado essa variavel
+//                //syncTokens();
+//                errosSemanticos.add(new ErroSemantico(saveLinha, "Variavel '" + token.getText() + "' não foi declarada!"));
+//            }
+//        }
 
 
     }
