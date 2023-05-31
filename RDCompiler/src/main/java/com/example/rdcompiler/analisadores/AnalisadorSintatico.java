@@ -72,6 +72,7 @@ public class AnalisadorSintatico extends MainSceneController {
                 variables.add(var); // adiciona na lista de variaveis
                 saveType = token.getText();
                 variables.get(variables.size()-1).setType(saveType); // seta o tipo que foi reconhecido pelo token
+                variables.get(variables.size()-1).setRow(lastLinha);
                 declaracao_flag = true;
                 DECLARACAO();
             }
@@ -126,16 +127,18 @@ public class AnalisadorSintatico extends MainSceneController {
             lastLinha = token.getLinha();
             if(token.getType() == Token.TKN_ID)
             {
-                if( !checkVariableExistence(token.getTypeString()) )
+                if( !checkVariableExistence(token.getText()) )
                 {
                     // nao existe essa variavel na lista, entao seta o nome
                     variables.get(variables.size()-1).setName(token.getText());
-                    IDENTIFICADOR();
+                    //IDENTIFICADOR();
                 }
                 else {
                     // exclui o ultimo objeto que adicionou
-                    errosSemanticos.add(new ErroSemantico(saveLinha, "Identificador '" + token.getText() + "' já está declarado!"));
+                    variables.remove(variables.size()-1);
+                    errosSemanticos.add(new ErroSemantico(lastLinha, "Identificador '" + token.getText() + "' já está declarado!"));
                 }
+                IDENTIFICADOR();
 
                 //FIMLINHA();
             }
@@ -152,10 +155,32 @@ public class AnalisadorSintatico extends MainSceneController {
 
     }
 
+    public void searchVariableNSetUsed(String varName)
+    {
+        for(Variable v : variables)
+        {
+            if(v.getName().equals(varName))
+                v.setUsed(true);
+
+        }
+    }
+
     public void IDENTIFICADOR()
     {
         int firstCall = id_call_controll;
         savePos = anaLexi.getPos();
+        String identifier = token.getText();
+
+        if(!declaracao_flag && token != null)
+        {
+            // verifica se está declarado
+            if(!checkVariableExistence(token.getText()))
+                errosSemanticos.add(new ErroSemantico(saveLinha, "Identificador '" + token.getText() + "' não foi declarado!"));
+            else {
+                searchVariableNSetUsed(token.getText());
+            }
+        }
+
         token = anaLexi.nextToken(); tokens.add(token);
         //saveLinha = token.getLinha();
         saveLinha = anaLexi.getLinha();
@@ -166,6 +191,7 @@ public class AnalisadorSintatico extends MainSceneController {
         if(token != null && token.getType() == Token.TKN_ATRI)
             ATRIBUICAO();
         // tratar erro aqui
+
         if(declaracao_flag && token != null && token.getType() == Token.TKN_PONTO_V) // quer continuar declarando variavel
         {
             id_call_controll++;
@@ -182,6 +208,7 @@ public class AnalisadorSintatico extends MainSceneController {
                 var = new Variable();
                 variables.add(var);
                 variables.get(variables.size()-1).setType(saveType);
+                variables.get(variables.size()-1).setRow(saveLinha);
                 if( !checkVariableExistence(token.getText()) )
                 {
                     // nao existe essa variavel na lista, entao seta o nome
@@ -190,6 +217,7 @@ public class AnalisadorSintatico extends MainSceneController {
                 else
                 {
                     // exclui o ultimo objeto que adicionou
+                    variables.remove(variables.size()-1);
                     errosSemanticos.add(new ErroSemantico(saveLinha, "Identificador '" + token.getText() + "' já está declarado!"));
                 }
                 IDENTIFICADOR();
@@ -205,7 +233,8 @@ public class AnalisadorSintatico extends MainSceneController {
 
         }
 
-        variables.get(variables.size()-1).setValue(saveValue);
+        searchVariableNSetValue(identifier, saveValue);
+        //variables.get(variables.size()-1).setValue(saveValue);
         saveValue = ""; // reseta o saveValue
 
         if(firstCall == 0 /*&& !for_flag*/)
@@ -214,6 +243,15 @@ public class AnalisadorSintatico extends MainSceneController {
             FIMLINHA();
         }
 
+    }
+
+    public void searchVariableNSetValue(String varName, String value)
+    {
+        for(Variable v : variables)
+        {
+            if(v.getName().equals(varName))
+                v.setValue(value);
+        }
     }
 
     public void ATRIBUICAO(){
@@ -460,6 +498,15 @@ public class AnalisadorSintatico extends MainSceneController {
         }
         else { // é identificador ou numero
 
+            if(token.getType() == Token.TKN_ID)
+            {
+                if(!checkVariableExistence(token.getText()))
+                    errosSemanticos.add(new ErroSemantico(saveLinha, "Identificador '" + token.getText() + "' não foi declarado!"));
+                else {
+                    searchVariableNSetUsed(token.getText());
+                }
+            }
+
             saveValue += token.getText();
 
         }
@@ -483,9 +530,22 @@ public class AnalisadorSintatico extends MainSceneController {
 
     }
 
+    public void checkVariableInicialization(String varName)
+    {
+        for(Variable v : variables)
+        {
+            if(v.getName().equals(varName))
+            {
+                if(v.getValue().equals(""))
+                    errosSemanticos.add(new ErroSemantico(saveLinha, "Variavel '" + varName + "' não foi inicializada antes desta estrutura!"));
+            }
+        }
+    }
+
     public void ER(){
         token = anaLexi.nextToken(); // precisa de um identificador
         tokens.add(token);
+        saveLinha = token.getLinha();
 
         if(token.getType() != Token.TKN_ID)
         {
@@ -496,6 +556,8 @@ public class AnalisadorSintatico extends MainSceneController {
         }
         else
         {
+            searchVariableNSetUsed(token.getText());
+            checkVariableInicialization(token.getText());
             token = anaLexi.nextToken(); // precisa ser um operador relacional
             tokens.add(token);
 
@@ -587,6 +649,7 @@ public class AnalisadorSintatico extends MainSceneController {
 
 
                     // agora se espera um )
+                    searchVariableNSetUsed(token.getText());
 
                     token = anaLexi.nextToken(); tokens.add(token);
                     if(token.getType() != Token.TKN_FECHA_PAR)
@@ -853,4 +916,7 @@ public class AnalisadorSintatico extends MainSceneController {
         return tokens;
     }
 
+    public List<Variable> getVariables() {
+        return variables;
+    }
 }

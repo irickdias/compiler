@@ -47,6 +47,7 @@ public class MainSceneController implements Initializable {
     //private List<String> reserved;
     private String term = "";
     private boolean success_flag = true;
+    private boolean warning_flag = false;
 
     public MainSceneController() {
     }
@@ -119,10 +120,18 @@ public class MainSceneController implements Initializable {
 
         //String token = "";
         analisadorSintatico(code);
-        if(success_flag)
-            compileSuccess();
-        else
+//        if(warning_flag)
+//            compileWarning();
+
+        if(!success_flag)
             compileFailure();
+        else
+        if(success_flag && warning_flag)
+            compileWarning();
+        else
+            compileSuccess();
+
+
 
     }
 
@@ -217,6 +226,38 @@ public class MainSceneController implements Initializable {
                 }
             }
 
+            List<Variable> vars = as.getVariables();
+            if(vars.size() > 0)
+            {
+                for(Variable v : vars)
+                {
+                    if(v != null)
+                    {
+                        if(v.getValue().equals("")) // não foi iniciado
+                        {
+                            //success_flag = false;
+                            warning_flag = true;
+                            Text txt = new Text("ERRO SEMANTICO na linha " + v.getRow() + ": variavel '" + v.getName() + "' não foi inicializada!");
+                            txt.setFont(new Font(14));
+                            txt.setFill(Color.ORANGE);
+                            txt.setStyle("-fx-font-weight: bold");
+                            flowPaneErros.getChildren().add(txt);
+                        }
+
+                        if(!v.isUsed())
+                        {
+                            //success_flag = false;
+                            warning_flag = true;
+                            Text txt = new Text("ERRO SEMANTICO: variavel '" + v.getName() + "' declarada na linha " + v.getRow() + " nunca foi utilizada!");
+                            txt.setFont(new Font(14));
+                            txt.setFill(Color.ORANGE);
+                            txt.setStyle("-fx-font-weight: bold");
+                            flowPaneErros.getChildren().add(txt);
+                        }
+                    }
+                }
+            }
+
 
 
         }
@@ -236,6 +277,13 @@ public class MainSceneController implements Initializable {
     {
         JOptionPane.showMessageDialog(null, "Código compilado com Erros!", "ERROR", JOptionPane.ERROR_MESSAGE);
         success_flag = true;
+    }
+
+    public void compileWarning()
+    {
+        JOptionPane.showMessageDialog(null, "Código compilado com Avisos!", "WARNING", JOptionPane.WARNING_MESSAGE);
+        success_flag = true;
+        warning_flag = false;
     }
 
     @FXML

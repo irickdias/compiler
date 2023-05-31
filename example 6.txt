@@ -1,0 +1,7 @@
+int a, teste;
+
+a = teste;
+
+if (det < 30) {
+	det = 32;
+}

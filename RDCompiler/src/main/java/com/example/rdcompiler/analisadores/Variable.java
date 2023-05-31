@@ -6,6 +6,7 @@ public class Variable {
     private String value;
     private boolean isUsed;
     private String type;
+    private int row;
 
     public Variable()
     {
@@ -13,6 +14,14 @@ public class Variable {
         this.value = "";
         this.isUsed = false;
         this.type = "";
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
     }
 
     public String getType() {
